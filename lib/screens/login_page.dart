@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/admin.dart';
+import '../models/auth_user.dart';
 import '../models/staff.dart';
 import '../models/driver.dart';
 import 'package:logixx/screens/admin/admin_main.dart';
@@ -66,13 +67,7 @@ class _LoginScreenState extends State<LoginScreen>
           final statusCode = await auth.registerAdmin(admin);
 
           if (statusCode == 201) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => AdminMainPage(
-                  admin: admin,
-                ),
-              ),
-            );
+            navigateDynamic(model: admin, userRole: "admin");
           }
         }
         break;
@@ -82,13 +77,7 @@ class _LoginScreenState extends State<LoginScreen>
               name: _enteredName,
               email: _enteredEmail,
               password: _enteredPassword);
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => WarehouseMainPage(
-                staff: staff,
-              ),
-            ),
-          );
+          navigateDynamic(model: staff, userRole: "staff");
         }
         break;
       case UserRole.driver:
@@ -105,15 +94,52 @@ class _LoginScreenState extends State<LoginScreen>
           final usersList = await prefs.getAuthedFromPrefs();
 
           if (statusCode == 201) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => DriverMainPage(
-                  driver: driver,
-                  usersList: usersList,
-                ),
-              ),
-            );
+            navigateDynamic(
+                model: driver, userRole: "driver", users: usersList);
           }
+        }
+        break;
+    }
+  }
+
+  void navigateDynamic({
+    dynamic model,
+    String? userRole,
+    List<AuthedUser>? users,
+  }) {
+    switch (userRole) {
+      case "admin":
+        {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => AdminMainPage(
+                admin: model as Admin,
+              ),
+            ),
+          );
+        }
+        break;
+      case "staff":
+        {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => WarehouseMainPage(
+                staff: model as Staff,
+              ),
+            ),
+          );
+        }
+        break;
+      case "driver":
+        {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => DriverMainPage(
+                driver: model as Driver,
+                usersList: users,
+              ),
+            ),
+          );
         }
         break;
     }

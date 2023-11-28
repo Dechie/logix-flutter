@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logixx/models/auth_user.dart';
 import 'package:logixx/services/shared_prefs.dart';
 import '../models/admin.dart';
 import '../models/staff.dart';
@@ -68,6 +69,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           final usersList = await prefs.getAuthedFromPrefs();
 
           if (statusCode == 201) {
+            /*
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) => AdminMainPage(
@@ -76,6 +78,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                 ),
               ),
             );
+            */
+            navigateDynamic(model: admin, userRole: "admin", users: usersList);
           }
         }
         break;
@@ -93,6 +97,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           final usersList = await preffs.getAuthedFromPrefs();
 
           if (statusCode == 201) {
+            /*
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) => WarehouseMainPage(
@@ -101,6 +106,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                 ),
               ),
             );
+            */
+            navigateDynamic(model: staff, userRole: "staff", users: usersList);
           }
         }
         break;
@@ -119,6 +126,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           final usersList = await prefs.getAuthedFromPrefs();
 
           if (statusCode == 201) {
+            /*
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => DriverMainPage(
@@ -127,7 +135,55 @@ class _RegisterScreenState extends State<RegisterScreen>
                 ),
               ),
             );
+            */
+            navigateDynamic(
+                model: driver, userRole: "driver", users: usersList);
           }
+        }
+        break;
+    }
+  }
+
+  void navigateDynamic({
+    dynamic model,
+    String? userRole,
+    List<AuthedUser>? users,
+  }) {
+    switch (userRole) {
+      case "admin":
+        {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => AdminMainPage(
+                admin: model as Admin,
+                usersList: users,
+              ),
+            ),
+          );
+        }
+        break;
+      case "staff":
+        {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => WarehouseMainPage(
+                staff: model as Staff,
+                usersList: users,
+              ),
+            ),
+          );
+        }
+        break;
+      case "driver":
+        {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => DriverMainPage(
+                driver: model as Driver,
+                usersList: users,
+              ),
+            ),
+          );
         }
         break;
     }
