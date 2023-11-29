@@ -27,6 +27,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
   late Admin admin;
   late Widget companiesPage;
   late Widget statsPage;
+  late Widget activeScreen;
 
   @override
   void initState() {
@@ -35,6 +36,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
     admin = widget.admin;
     companiesPage = CompanyDashboard(admin: admin);
     statsPage = GetStats();
+    activeScreen = companiesPage;
   }
 
   bool _moreAccountsTabSelected = true;
@@ -123,7 +125,8 @@ class _AdminMainPageState extends State<AdminMainPage> {
   @override
   Widget build(BuildContext context) {
     final admin = widget.admin;
-    Widget activeScreen = CompanyDashboard(admin: admin);
+    //Widget activeScreen = companiesPage;
+    print(activeScreen);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -252,6 +255,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
                   Navigator.pop(context);
                   setState(() {
                     activeScreen = statsPage;
+                    print(activeScreen);
                   });
                 },
               ),

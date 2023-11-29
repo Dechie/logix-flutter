@@ -23,24 +23,30 @@ class _ManageCompanyState extends State<ManageCompany> {
               ),
             ),
           )
-        : Container(
-            margin: const EdgeInsets.all(15),
-            color: const Color.fromARGB(255, 254, 111, 101),
-            child: Row(
-              children: [
-                Text(
-                  'No Company So far',
-                  style: GoogleFonts.roboto(
-                    textStyle: TextStyle(fontSize: 16),
-                    color: Colors.black38,
-                  ),
+        : SizedBox(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: DecoratedBox(
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 254, 111, 101),
                 ),
-                const Spacer(),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.add),
-                )
-              ],
+                child: Row(
+                  children: [
+                    Text(
+                      'No Company So far',
+                      style: GoogleFonts.roboto(
+                        textStyle: const TextStyle(fontSize: 16),
+                        color: Colors.black38,
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.add),
+                    )
+                  ],
+                ),
+              ),
             ),
           );
   }
