@@ -86,7 +86,7 @@ class TenantApi {
     int statusCode = 200;
     statusCode = statusCode + 0;
 
-    const url = '${AppUrls.baseUrl}/2/routes';
+    var url = '${AppUrls.baseUrl}/$selectTenant/routes';
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 

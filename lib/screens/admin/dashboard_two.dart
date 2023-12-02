@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logixx/screens/admin/subscreens/company_general.dart';
 
 import '../../models/admin.dart';
 import '../../models/company.dart';
 import '../../models/route.dart';
 import '../../utils/constants.dart';
-import '../../services/tenant_api.dart';
+import 'subscreens/projects_screen.dart';
+import 'subscreens/routes_screen.dart';
+
+typedef MyFunctionCallback = void Function(BuildContext context, int screen);
 
 class DashBoard extends StatefulWidget {
   const DashBoard({
@@ -25,30 +29,42 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   late Widget activeScreen;
 
-  var projectScreen, routeScreen;
+  var projectScreen, routeScreen, generalScreen;
   List<String> projects = [];
   List<TravelRoute> routes = [];
   late int tenantId;
+  late List<dynamic> screenWithIndex;
 
   @override
   void initState() {
     super.initState();
-    tenantId = widget.company.companyId!;
     projectScreen = ProjectScreen(
       admin: widget.admin,
       company: widget.company,
     );
-    routeScreen = RouteScreen(selectTenant: tenantId);
+    routeScreen = RouteScreen(
+      admin: widget.admin,
+      company: widget.company,
+    );
+    generalScreen = CompanyGeneral(
+      company: widget.company,
+      admin: widget.admin,
+    );
     activeScreen = projectScreen;
+
+    screenWithIndex = [routeScreen, projectScreen, generalScreen];
   }
 
   void onRefresh() {
+    /*
     activeScreen == routeScreen
         ? routeScreen.refresh()
         : projectScreen.refresh();
+        */
   }
 
   void switchScreen(int newScreen) {
+    /*
     switch (newScreen) {
       case 0:
         activeScreen = routeScreen;
@@ -57,7 +73,14 @@ class _DashBoardState extends State<DashBoard> {
         activeScreen = projectScreen;
         break;
     }
+    */
+    activeScreen = screenWithIndex[newScreen];
     setState(() {});
+  }
+
+  void switcher(BuildContext context, int screen) {
+    switchScreen(screen);
+    Navigator.pop(context);
   }
 
   @override
@@ -125,6 +148,21 @@ class _DashBoardState extends State<DashBoard> {
             ),
             ListTile(
               title: Text(
+                'General',
+                style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              onTap: () {
+                switchScreen(2);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text(
                 'Routes',
                 style: GoogleFonts.roboto(
                   textStyle: const TextStyle(
@@ -153,6 +191,66 @@ class _DashBoardState extends State<DashBoard> {
                 Navigator.pop(context);
               },
             ),
+            ListTile(
+              title: Text(
+                'Travels',
+                style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              onTap: () {
+                switchScreen(1);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Orders',
+                style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              onTap: () {
+                switchScreen(1);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Drivers',
+                style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              onTap: () {
+                switchScreen(1);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Staff',
+                style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              onTap: () {
+                switchScreen(1);
+                Navigator.pop(context);
+              },
+            ),
           ],
         ),
       ),
@@ -161,326 +259,31 @@ class _DashBoardState extends State<DashBoard> {
   }
 }
 
-class ProjectScreen extends StatefulWidget {
-  const ProjectScreen({
+class CustomTile extends StatelessWidget {
+  const CustomTile({
     super.key,
-    required this.company,
-    required this.admin,
+    required this.screenSwitcher,
+    required this.ctx,
+    required this.text,
   });
 
-  final Admin admin;
-  final Company company;
-
-  @override
-  _ProjectScreenState createState() => _ProjectScreenState();
-}
-
-class _ProjectScreenState extends State<ProjectScreen> {
-  var projects = [];
-  final tenantApi = TenantApi();
-
-  final _nameController = TextEditingController();
-  String name = '';
-
-  void onCreateProject() async {
-    late int statusCode;
-    name = _nameController.text;
-    final admin = widget.admin;
-    final company = widget.company;
-
-    statusCode = await tenantApi.createProject(name, admin, company);
-    if (statusCode == 200) {
-      fetchProjects(2);
-    }
-  }
-
-  void refresh() async {
-    fetchProjects(2);
-  }
-
-  void fetchProjects(int selectTenant) async {
-    List<String> fetched = [];
-    late int statusCode;
-    (statusCode, fetched) = await tenantApi.fetchProjects(selectTenant);
-    if (statusCode == 200) {
-      setState(() {
-        projects = fetched;
-      });
-    } else if (statusCode == 302) {
-      Navigator.pop(context);
-    }
-  }
-
-  void createProject() async {
-    //final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          /*
-          return LayoutBuilder(builder: (context, constraints) {
-            return SizedBox(
-              height: double.infinity,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    16,
-                    16,
-                    16,
-                    keyboardSpace + 16,
-                  ),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _nameController,
-                          maxLength: 50,
-                          decoration: const InputDecoration(
-                            label: Text('name'),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text('Create'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          });
-          */
-          return Column(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _nameController,
-                  maxLength: 50,
-                  decoration: const InputDecoration(
-                    label: Text('name'),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              TextButton(
-                onPressed: () {
-                  onCreateProject();
-                  Navigator.pop(context);
-                },
-                child: const Text('Create'),
-              ),
-            ],
-          );
-        });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    fetchProjects(2);
-  }
+  final VoidCallback screenSwitcher;
+  final BuildContext ctx;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: projects.isNotEmpty
-          ? ListView.builder(
-              itemCount: projects.length,
-              itemBuilder: (ctx, index) => Card(
-                elevation: 5,
-                shadowColor: const Color.fromARGB(255, 33, 47, 243),
-                child: Text(
-                  projects[index],
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ),
-            )
-          : const Center(
-              child: Text('No projects so far'),
-            ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          createProject();
-        },
-        child: const Icon(Icons.add),
+    return ListTile(
+      title: Text(
+        text,
+        style: GoogleFonts.roboto(
+          textStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
-    );
-  }
-}
-
-class RouteScreen extends StatefulWidget {
-  const RouteScreen({
-    super.key,
-    required this.selectTenant,
-  });
-  final int selectTenant;
-  @override
-  _RouteScreenState createState() => _RouteScreenState();
-}
-
-class _RouteScreenState extends State<RouteScreen> {
-  List<TravelRoute> projects = [];
-  final tenantApi = TenantApi();
-
-  final _nameController = TextEditingController();
-  String name = '';
-
-  void onCreateRoute() async {
-    late int statusCode;
-    name = _nameController.text;
-
-    statusCode = await tenantApi.createTravelRoute(name);
-    if (statusCode == 200) {
-      fetchRoutes(2);
-    }
-  }
-
-  void refresh() async {
-    fetchRoutes(2);
-  }
-
-  void fetchRoutes(int selectTenant) async {
-    List<TravelRoute> fetched = [];
-    fetched = await tenantApi.fetchTravelRoutes(selectTenant);
-    if (fetched.isNotEmpty) {
-      setState(() {
-        projects = fetched;
-      });
-    }
-  }
-
-  void createRoute() async {
-    //final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          /*
-          return LayoutBuilder(builder: (context, constraints) {
-            return SizedBox(
-              height: double.infinity,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    16,
-                    16,
-                    16,
-                    keyboardSpace + 16,
-                  ),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _nameController,
-                          maxLength: 50,
-                          decoration: const InputDecoration(
-                            label: Text('name'),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text('Create'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          });
-          */
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _nameController,
-                    maxLength: 50,
-                    decoration: const InputDecoration(
-                      label: Text('name'),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
-                TextButton(
-                  onPressed: () {
-                    onCreateRoute();
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Create'),
-                ),
-              ],
-            ),
-          );
-        });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    fetchRoutes(2);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: projects.isNotEmpty
-          ? Padding(
-              padding: const EdgeInsets.all(20),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * .8,
-                height: 500,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Routes',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: projects.length,
-                        itemBuilder: (ctx, index) => Card(
-                          elevation: 5,
-                          shadowColor: const Color.fromARGB(255, 33, 47, 243),
-                          child: ListTile(
-                            title: Text(
-                              //projects[index],
-                              projects[index].name,
-                              style: const TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                            subtitle: Text(
-                              'company id: ${projects[index].companyId}',
-                              style: const TextStyle(
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : const Center(
-              child: Text('No routes so far'),
-            ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          createRoute();
-        },
-        child: const Icon(Icons.add),
-      ),
+      onTap: screenSwitcher,
     );
   }
 }

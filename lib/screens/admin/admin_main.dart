@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/models/auth_user.dart';
-import 'package:logixx/screens/admin/companies_list.dart';
+import 'package:logixx/screens/admin/company_dashboard_one.dart';
 import 'package:logixx/screens/admin/widgets/get_stats.dart';
 import 'package:logixx/screens/commons.dart';
 
