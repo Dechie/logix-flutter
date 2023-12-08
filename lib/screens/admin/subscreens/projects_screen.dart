@@ -33,18 +33,19 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
     statusCode = await tenantApi.createProject(name, admin, company);
     if (statusCode == 200) {
-      fetchProjects(2);
+      fetchProjects(company.companyId!);
     }
   }
 
   void refresh() async {
-    fetchProjects(2);
+    fetchProjects(widget.company.companyId!);
   }
 
   void fetchProjects(int selectTenant) async {
     List<String> fetched = [];
     late int statusCode;
-    (statusCode, fetched) = await tenantApi.fetchProjects(selectTenant);
+    (statusCode, fetched) =
+        await tenantApi.fetchProjects(selectTenant, widget.admin);
     if (statusCode == 200) {
       setState(() {
         projects = fetched;

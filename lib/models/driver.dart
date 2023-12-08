@@ -19,4 +19,18 @@ class Driver {
       token: user.token,
     );
   }
+
+  factory Driver.fromMap(Map<String, dynamic> map) {
+    return Driver(
+      name: map['name'] as String,
+      email: map['email'] as String,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': name,
+    };
+  }
 }

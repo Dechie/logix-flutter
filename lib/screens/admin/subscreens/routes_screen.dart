@@ -18,7 +18,7 @@ class RouteScreen extends StatefulWidget {
 }
 
 class _RouteScreenState extends State<RouteScreen> {
-  List<TravelRoute> projects = [];
+  List<TravelRoute> routes = [];
   final tenantApi = TenantApi();
 
   final _nameController = TextEditingController();
@@ -28,7 +28,8 @@ class _RouteScreenState extends State<RouteScreen> {
     late int statusCode;
     name = _nameController.text;
 
-    statusCode = await tenantApi.createTravelRoute(name);
+    statusCode =
+        await tenantApi.createTravelRoute(name, widget.admin, widget.company);
     if (statusCode == 200) {
       fetchRoutes(widget.company.companyId!);
     }
@@ -39,11 +40,13 @@ class _RouteScreenState extends State<RouteScreen> {
   }
 
   void fetchRoutes(int tenantId) async {
+    int statusCode = 0;
     List<TravelRoute> fetched = [];
-    fetched = await tenantApi.fetchTravelRoutes(tenantId);
+    (statusCode, fetched) =
+        await tenantApi.fetchTravelRoutes(tenantId, widget.admin);
     if (fetched.isNotEmpty) {
       setState(() {
-        projects = fetched;
+        routes = fetched;
       });
     }
   }
@@ -125,7 +128,7 @@ class _RouteScreenState extends State<RouteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: projects.isNotEmpty
+      body: routes.isNotEmpty
           ? Padding(
               padding: const EdgeInsets.all(20),
               child: SizedBox(
@@ -144,20 +147,20 @@ class _RouteScreenState extends State<RouteScreen> {
                     ),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: projects.length,
+                        itemCount: routes.length,
                         itemBuilder: (ctx, index) => Card(
                           elevation: 5,
                           shadowColor: const Color.fromARGB(255, 33, 47, 243),
                           child: ListTile(
                             title: Text(
-                              //projects[index],
-                              projects[index].name,
+                              //routes[index],
+                              routes[index].name,
                               style: const TextStyle(
                                 fontSize: 18,
                               ),
                             ),
                             subtitle: Text(
-                              'company id: ${projects[index].companyId}',
+                              'company id: ${routes[index].companyId}',
                               style: const TextStyle(
                                 fontSize: 15,
                               ),

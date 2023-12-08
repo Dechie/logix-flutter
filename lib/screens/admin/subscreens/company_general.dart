@@ -46,7 +46,8 @@ class _CompanyGeneralState extends State<CompanyGeneral> {
   void fetchProjects(int selectTenant) async {
     List<String> fetched = [];
     late int statusCode;
-    (statusCode, fetched) = await tenantApi.fetchProjects(selectTenant);
+    (statusCode, fetched) =
+        await tenantApi.fetchProjects(selectTenant, widget.admin);
     if (statusCode == 200) {
       setState(() {
         projects = fetched;

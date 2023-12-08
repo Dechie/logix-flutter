@@ -19,4 +19,18 @@ class Staff {
       token: user.token,
     );
   }
+
+  factory Staff.fromMap(Map<String, dynamic> map) {
+    return Staff(
+      name: map['name'] as String,
+      email: map['email'] as String,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+    };
+  }
 }
