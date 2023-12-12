@@ -10,7 +10,7 @@ import '../utils/constants.dart';
 import 'admin/admin_main.dart';
 import 'auth_page.dart';
 import 'driver/driver_main.dart';
-import 'warehouse/warehouse_main.dart';
+import 'warehouse/warehouse_suspend.dart';
 
 class CommonMethos {
   Container showMoreAccounts(BuildContext context, List<AuthedUser> users) {
@@ -20,11 +20,11 @@ class CommonMethos {
         const Color.fromARGB(255, 0, 109, 98)
       ],
       'staff': [
-        Color.fromARGB(255, 246, 203, 48),
-        Color.fromARGB(255, 156, 120, 11)
+        const Color.fromARGB(255, 246, 203, 48),
+        const Color.fromARGB(255, 156, 120, 11)
       ],
       'driver': [
-        Color.fromARGB(255, 237, 99, 68),
+        const Color.fromARGB(255, 237, 99, 68),
         const Color.fromARGB(255, 151, 13, 3)
       ],
     };
@@ -148,7 +148,7 @@ class CommonMethos {
         {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (ctx) => WarehouseMainPage(
+              builder: (ctx) => WarehouseSuspendPage(
                 staff: Staff.fromAuthedUser(user),
                 usersList: users,
               ),

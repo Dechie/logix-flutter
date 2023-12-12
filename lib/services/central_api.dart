@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:logixx/models/admin.dart';
 import 'package:logixx/models/company.dart';
@@ -104,5 +106,28 @@ class Api {
 
     print(companies);
     return (statusCode, companies);
+  }
+
+  fetchAllCompanies() async {
+    var dio = Dio();
+
+    var url = '${AppUrls.baseUrl}/companies';
+
+    List<Company> companies = [];
+    try {
+      final response = await dio.get(url);
+
+      if (response.statusCode == 200) {
+        final jsonData = response.data as List<dynamic>;
+
+        if (jsonData.isNotEmpty) {
+          companies = jsonData.map((data) => Company.fromMap(data)).toList();
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return companies;
   }
 }

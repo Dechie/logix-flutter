@@ -6,6 +6,7 @@ import 'package:logixx/models/auth_user.dart';
 import 'package:logixx/screens/admin/admin_main.dart';
 import 'package:logixx/screens/auth_page.dart';
 import 'package:logixx/screens/warehouse/warehouse_main.dart';
+import 'package:logixx/screens/warehouse/warehouse_suspend.dart';
 import 'package:logixx/services/shared_prefs.dart';
 
 import '../models/driver.dart';
@@ -58,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
         case 'staff':
           {
             staff = Staff.fromAuthedUser(authedUser);
-            nextScreen = WarehouseMainPage(staff: staff, usersList: users);
+            nextScreen = WarehouseSuspendPage(staff: staff, usersList: users);
           }
           break;
         case 'driver':
