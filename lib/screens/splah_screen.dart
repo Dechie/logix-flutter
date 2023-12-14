@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logixx/models/admin.dart';
 import 'package:logixx/models/auth_user.dart';
-import 'package:logixx/screens/admin/admin_main.dart';
-import 'package:logixx/screens/auth_page.dart';
-import 'package:logixx/screens/warehouse/warehouse_main.dart';
+import 'package:logixx/screens/admin/main/admin_main.dart';
+import 'package:logixx/screens/auth/auth_page.dart';
+import 'package:logixx/screens/warehouse/main/warehouse_main.dart';
 import 'package:logixx/screens/warehouse/warehouse_suspend.dart';
 import 'package:logixx/services/shared_prefs.dart';
 

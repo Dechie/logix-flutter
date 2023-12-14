@@ -5,10 +5,10 @@ import 'package:logixx/screens/admin/company_dashboard_one.dart';
 import 'package:logixx/screens/admin/widgets/get_stats.dart';
 import 'package:logixx/screens/commons.dart';
 
-import '../../models/admin.dart';
-import '../../models/company.dart';
-import '../../services/central_api.dart';
-import '../../utils/constants.dart';
+import '../../../models/admin.dart';
+import '../../../models/company.dart';
+import '../../../services/central_api.dart';
+import '../../../utils/constants.dart';
 
 class AdminMainPage extends StatefulWidget {
   AdminMainPage({

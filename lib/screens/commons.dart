@@ -7,8 +7,8 @@ import '../models/driver.dart';
 import '../models/staff.dart';
 import '../services/shared_prefs.dart';
 import '../utils/constants.dart';
-import 'admin/admin_main.dart';
-import 'auth_page.dart';
+import 'admin/main/admin_main.dart';
+import 'auth/auth_page.dart';
 import 'driver/driver_main.dart';
 import 'warehouse/warehouse_suspend.dart';
 

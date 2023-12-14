@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/admin.dart';
 import '../models/company.dart';
 import '../models/project.dart';
+import '../models/staff.dart';
 import '../utils/constants.dart';
 import '../models/route.dart';
 
@@ -84,6 +86,34 @@ class TenantApi {
     } catch (e) {
       print(e.toString());
     }
+    return statusCode;
+  }
+
+  Future<int> applyStaffToCompany(Company company, Staff staff) async {
+    var url = '${AppUrls.baseUrl}/staff/applyStaff';
+
+    var dio = Dio();
+
+    int statusCode = 500;
+    try {
+      final response = await dio.post(
+        url,
+        data: {
+          'company_id': company.companyId,
+          'staff_email': staff.email,
+        },
+        options: Options(headers: {
+          'Authorization': 'Bearer ${staff.token}',
+          'Content-Type': 'application/json',
+        }),
+      );
+      print(response.data);
+
+      statusCode = response.statusCode!;
+    } catch (e) {
+      log(e.toString());
+    }
+
     return statusCode;
   }
 

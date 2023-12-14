@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/screens/commons.dart';
+import 'package:logixx/screens/warehouse/main/warehouse_main.dart';
+import 'package:logixx/services/tenant_api.dart';
 
 import '../../models/company.dart';
 import '../../models/staff.dart';
@@ -24,6 +28,25 @@ class WarehouseSuspendPage extends StatefulWidget {
 
 class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
   var companies = [];
+
+  bool isApplied = false;
+  late Company appliedCompany;
+
+  void navigator() {
+    ;
+  }
+
+  Future<bool> applyToCompany(Company company, Staff staff) async {
+    print('this one executed');
+
+    final tenant = TenantApi();
+
+    int statusCode = await tenant.applyStaffToCompany(company, staff);
+    print('status code: $statusCode');
+
+    return statusCode == 200;
+  }
+
   void fetchCompanies() async {
     final api = Api();
     List<Company> fetched = await api.fetchAllCompanies();
@@ -67,8 +90,24 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                         ),
                       ),
                     ),
-                    onTap: () {
+                    onTap: () async {
                       // apply to company function
+                      print('this one tapped');
+                      bool isApplied =
+                          await applyToCompany(company, widget.staff);
+
+                      if (isApplied) {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => WarehouseMainPage(
+                              staff: widget.staff,
+                              company: company,
+                              usersList: widget.usersList,
+                            ),
+                          ),
+                        );
+                      }
                     },
                   ),
                 ),

@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logixx/models/company.dart';
 import 'package:logixx/screens/commons.dart';
 
-import '../../models/staff.dart';
-import '../../models/auth_user.dart';
-import '../../utils/constants.dart';
+import '../../../models/staff.dart';
+import '../../../models/auth_user.dart';
+import '../../../utils/constants.dart';
 
 // ignore: must_be_immutable
 class WarehouseMainPage extends StatefulWidget {
   WarehouseMainPage({
     super.key,
     required this.staff,
+    this.company,
     this.usersList,
   });
   List<AuthedUser>? usersList;
+  final Company? company;
   final Staff staff;
 
   @override

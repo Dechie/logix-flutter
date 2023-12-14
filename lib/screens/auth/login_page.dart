@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:logixx/models/auth_user.dart';
-import 'package:logixx/services/shared_prefs.dart';
-import '../models/admin.dart';
-import '../models/staff.dart';
-import '../models/driver.dart';
-import 'package:logixx/screens/admin/admin_main.dart';
-import 'package:logixx/screens/driver/driver_main.dart';
-import 'package:logixx/screens/warehouse/warehouse_main.dart';
+import '../../models/admin.dart';
+import '../../models/auth_user.dart';
+import '../../models/driver.dart';
+import '../../models/staff.dart';
+import '../../services/auth.dart';
+import '../../services/shared_prefs.dart';
 
-import '../services/auth.dart';
-import '../utils/constants.dart';
+import 'package:logixx/screens/admin/main/admin_main.dart';
+import 'package:logixx/screens/driver/driver_main.dart';
+import 'package:logixx/screens/warehouse/main/warehouse_main.dart';
+
+import '../../utils/constants.dart';
 
 enum UserRole { admin, staff, driver }
 
-class RegisterScreen extends StatefulWidget {
-  RegisterScreen({
+class LoginScreen extends StatefulWidget {
+  LoginScreen({
     super.key,
     required this.changePage,
   });
@@ -23,10 +24,10 @@ class RegisterScreen extends StatefulWidget {
   final VoidCallback changePage;
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen>
+class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -56,86 +57,44 @@ class _RegisterScreenState extends State<RegisterScreen>
     switch (_userRole) {
       case UserRole.admin:
         {
-          print('user is admin');
           final admin = Admin(
             name: _enteredName,
             email: _enteredEmail,
             password: _enteredPassword,
           );
+
           final auth = Auth();
-          final prefs = SharedPrefs();
 
           final statusCode = await auth.registerAdmin(admin);
-          final usersList = await prefs.getAuthedFromPrefs();
 
           if (statusCode == 201) {
-            /*
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => AdminMainPage(
-                  admin: admin,
-                  usersList: usersList,
-                ),
-              ),
-            );
-            */
-            navigateDynamic(model: admin, userRole: "admin", users: usersList);
+            navigateDynamic(model: admin, userRole: "admin");
           }
         }
         break;
       case UserRole.staff:
         {
-          print('user is staff');
           final staff = Staff(
               name: _enteredName,
               email: _enteredEmail,
               password: _enteredPassword);
-          final auth = Auth();
-          final preffs = SharedPrefs();
-
-          final statusCode = await auth.registerStaff(staff);
-          final usersList = await preffs.getAuthedFromPrefs();
-
-          if (statusCode == 201) {
-            /*
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => WarehouseMainPage(
-                  staff: staff,
-                  usersList: usersList,
-                ),
-              ),
-            );
-            */
-            navigateDynamic(model: staff, userRole: "staff", users: usersList);
-          }
+          navigateDynamic(model: staff, userRole: "staff");
         }
         break;
       case UserRole.driver:
         {
-          print('user is driver');
           final driver = Driver(
             name: _enteredName,
             email: _enteredEmail,
             password: _enteredPassword,
           );
+
           final auth = Auth();
           final prefs = SharedPrefs();
-
           final statusCode = await auth.registerDriver(driver);
           final usersList = await prefs.getAuthedFromPrefs();
 
           if (statusCode == 201) {
-            /*
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => DriverMainPage(
-                  driver: driver,
-                  usersList: usersList,
-                ),
-              ),
-            );
-            */
             navigateDynamic(
                 model: driver, userRole: "driver", users: usersList);
           }
@@ -156,7 +115,6 @@ class _RegisterScreenState extends State<RegisterScreen>
             MaterialPageRoute(
               builder: (context) => AdminMainPage(
                 admin: model as Admin,
-                usersList: users,
               ),
             ),
           );
@@ -168,7 +126,6 @@ class _RegisterScreenState extends State<RegisterScreen>
             MaterialPageRoute(
               builder: (context) => WarehouseMainPage(
                 staff: model as Staff,
-                usersList: users,
               ),
             ),
           );
@@ -270,8 +227,12 @@ class _RegisterScreenState extends State<RegisterScreen>
                                     ),
                                     const SizedBox(height: 10),
                                     TextFormField(
-                                      controller: emailController,
-                                      keyboardType: TextInputType.emailAddress,
+                                      controller: _userIsAdmin
+                                          ? emailController
+                                          : phoneController,
+                                      keyboardType: _userIsAdmin
+                                          ? TextInputType.emailAddress
+                                          : TextInputType.phone,
                                       validator: (value) {
                                         if (value == null ||
                                             value.isEmpty ||
@@ -282,11 +243,17 @@ class _RegisterScreenState extends State<RegisterScreen>
                                         return null;
                                       },
                                       onSaved: (value) {
-                                        _enteredEmail = value!;
+                                        if (_userIsAdmin) {
+                                          _enteredEmail = value!;
+                                        } //else {
+                                        //_enteredPhone = value!;
+                                        // }
                                       },
                                       decoration: InputDecoration(
                                         isDense: true,
-                                        hintText: 'Your Email Here',
+                                        hintText: _userIsAdmin
+                                            ? 'Your Email Here'
+                                            : 'Your Phone Number Here',
                                         suffixIcon: const Icon(Icons.phone),
                                         border: OutlineInputBorder(
                                           borderRadius:
@@ -325,6 +292,45 @@ class _RegisterScreenState extends State<RegisterScreen>
                                       ),
                                     ),
                                     const SizedBox(height: 10),
+                                    TextFormField(
+                                      validator: (value) {
+                                        if (value == null ||
+                                            value.isEmpty ||
+                                            value.trim().length <= 1 ||
+                                            value.trim().length >= 50) {
+                                          return 'Must be between 1 and 50 characters';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) {
+                                        /*
+                                        if (_userIsAdmin) {
+                                          _enteredPhone = value!;
+                                        } else {
+                                          _enteredCompanyCode = value!;
+                                        }
+                                        */
+                                      },
+                                      controller: _userIsAdmin
+                                          ? phoneController
+                                          : companyCodeController,
+                                      keyboardType: _userIsAdmin
+                                          ? TextInputType.phone
+                                          : TextInputType.text,
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        hintText: _userIsAdmin
+                                            ? 'Your Phone Number Here'
+                                            : 'Your Company Code Here',
+                                        suffixIcon: const Icon(Icons.mail),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          borderSide:
+                                              const BorderSide(width: 4),
+                                        ),
+                                      ),
+                                    ),
                                     Container(
                                       width: 300,
                                       height: 120,
@@ -344,11 +350,12 @@ class _RegisterScreenState extends State<RegisterScreen>
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
-                                                  _userRole = UserRole.admin;
-                                                  nameController.clear();
-                                                  phoneController.clear();
-                                                  emailController.clear();
-                                                  setState(() {});
+                                                  setState(() {
+                                                    _userRole = UserRole.admin;
+                                                    nameController.clear();
+                                                    phoneController.clear();
+                                                    emailController.clear();
+                                                  });
                                                 },
                                                 child: Container(
                                                   width: 85,
@@ -390,11 +397,13 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               const SizedBox(width: 20),
                                               GestureDetector(
                                                 onTap: () {
-                                                  _userRole = UserRole.staff;
-                                                  nameController.clear();
-                                                  phoneController.clear();
-                                                  companyCodeController.clear();
-                                                  setState(() {});
+                                                  setState(() {
+                                                    _userRole = UserRole.staff;
+                                                    nameController.clear();
+                                                    phoneController.clear();
+                                                    companyCodeController
+                                                        .clear();
+                                                  });
                                                 },
                                                 child: Container(
                                                   width: 85,
@@ -414,7 +423,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                                                             width: 2,
                                                             color:
                                                                 GlobalConstants
-                                                                    .mainBlue),
+                                                                    .mainBlue,
+                                                          ),
                                                   ),
                                                   child: Text(
                                                     'Staff',
@@ -435,11 +445,13 @@ class _RegisterScreenState extends State<RegisterScreen>
                                               const SizedBox(width: 20),
                                               GestureDetector(
                                                 onTap: () {
-                                                  _userRole = UserRole.driver;
-                                                  nameController.clear();
-                                                  phoneController.clear();
-                                                  companyCodeController.clear();
-                                                  setState(() {});
+                                                  setState(() {
+                                                    _userRole = UserRole.driver;
+                                                    nameController.clear();
+                                                    phoneController.clear();
+                                                    companyCodeController
+                                                        .clear();
+                                                  });
                                                 },
                                                 child: Container(
                                                   width: 85,
@@ -527,7 +539,6 @@ class _RegisterScreenState extends State<RegisterScreen>
                                             style: GoogleFonts.roboto(
                                               textStyle: const TextStyle(
                                                 fontSize: 16,
-                                                fontWeight: FontWeight.bold,
                                                 color: GlobalConstants.mainBlue,
                                               ),
                                             ),

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/utils/constants.dart';
 
-import '../../../models/admin.dart';
-import '../../../models/company.dart';
-import '../../../services/tenant_api.dart';
+import '../../../../models/admin.dart';
+import '../../../../models/company.dart';
+import '../../../../services/tenant_api.dart';
 
 class CompanyGeneral extends StatefulWidget {
   const CompanyGeneral({

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:logixx/screens/admin/subscreens/company_general.dart';
+import 'package:logixx/screens/admin/main/subscreens/company_general.dart';
 
 import '../../models/admin.dart';
 import '../../models/company.dart';
 import '../../models/route.dart';
 import '../../utils/constants.dart';
-import 'subscreens/projects_screen.dart';
-import 'subscreens/routes_screen.dart';
+import 'main/subscreens/projects_screen.dart';
+import 'main/subscreens/routes_screen.dart';
 
 typedef MyFunctionCallback = void Function(BuildContext context, int screen);
 
