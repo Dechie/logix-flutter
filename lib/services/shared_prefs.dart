@@ -3,8 +3,29 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/auth_user.dart';
+import '../models/company.dart';
+import '../models/staff.dart';
 
 class SharedPrefs {
+  Future<void> saveStaffAppliedStatus(Staff staff, Company company) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final email = staff.email;
+    final companyId = company.companyId;
+
+    List<String>? appliedStaffs = prefs.getStringList('appliedStaffs') ?? [];
+
+    appliedStaffs.add('$email:$companyId');
+    await prefs.setStringList('appliedStaffs', appliedStaffs);
+  }
+
+  Future<List<String>> getAppliedStaffs() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? appliedStaffs = prefs.getStringList('appliedStaffs') ?? [];
+
+    return appliedStaffs;
+  }
+
   Future<void> saveUserToPrefs(AuthedUser authedUser) async {
     final prefs = await SharedPreferences.getInstance();
 

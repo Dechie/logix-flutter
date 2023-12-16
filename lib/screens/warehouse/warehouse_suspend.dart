@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/screens/commons.dart';
 import 'package:logixx/screens/warehouse/main/warehouse_main.dart';
+import 'package:logixx/services/shared_prefs.dart';
 import 'package:logixx/services/tenant_api.dart';
 
 import '../../models/company.dart';
@@ -27,13 +28,53 @@ class WarehouseSuspendPage extends StatefulWidget {
 }
 
 class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
-  var companies = [];
+  List<Company> companies = [];
 
   bool isApplied = false;
   late Company appliedCompany;
 
-  void navigator() {
-    ;
+  void bringAllFetched() async {
+    await fetchCompanies();
+    await fetchApplied();
+  }
+
+  Future<void> fetchApplied() async {
+    var shPrefs = SharedPrefs();
+    List<String> staffList = await shPrefs.getAppliedStaffs();
+
+    String emailInQuestion = widget.staff.email;
+
+    List<Map<String, String>> emails = staffList.map((stf) {
+      List<String> splitted = stf.split(':');
+      return {
+        'email': splitted.first,
+        'cId': splitted.last,
+      };
+    }).toList();
+
+    setState(() {
+      isApplied = emails.any((map) => map['email'] == emailInQuestion);
+
+      // isApplied = emails.contains(emailInQuestion);
+      // company: companies.firstWhere((cmp) => cmp.companyId == ),
+    });
+
+    if (isApplied) {
+      Company companyy = companies.firstWhere(
+        (cmp) => emails.any(
+          (map) => cmp.companyId == int.parse(map['cId']!),
+        ),
+      );
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => WarehouseMainPage(
+            staff: widget.staff,
+            company: companyy,
+            usersList: widget.usersList,
+          ),
+        ),
+      );
+    }
   }
 
   Future<bool> applyToCompany(Company company, Staff staff) async {
@@ -44,10 +85,13 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
     int statusCode = await tenant.applyStaffToCompany(company, staff);
     print('status code: $statusCode');
 
+    var shPrefs = SharedPrefs();
+    await shPrefs.saveStaffAppliedStatus(staff, company);
+
     return statusCode == 200;
   }
 
-  void fetchCompanies() async {
+  Future<void> fetchCompanies() async {
     final api = Api();
     List<Company> fetched = await api.fetchAllCompanies();
 
@@ -121,7 +165,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
   @override
   void initState() {
     super.initState();
-    fetchCompanies();
+    bringAllFetched();
   }
 
   @override

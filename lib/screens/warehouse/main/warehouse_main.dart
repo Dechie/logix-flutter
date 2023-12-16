@@ -97,7 +97,7 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
                 commons.showMoreAccounts(context, widget.usersList!),
               ListTile(
                 title: Text(
-                  'MyCompany',
+                  'New Stock',
                   style: GoogleFonts.montserrat(
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w600,

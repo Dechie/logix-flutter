@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:logixx/models/stock.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/admin.dart';
@@ -90,10 +91,11 @@ class TenantApi {
   }
 
   Future<int> applyStaffToCompany(Company company, Staff staff) async {
-    var url = '${AppUrls.baseUrl}/staff/applyStaff';
+    var url = '${AppUrls.baseUrl}/applyStaff';
 
     var dio = Dio();
 
+    print('staff toek: ${staff.token}');
     int statusCode = 500;
     try {
       final response = await dio.post(
@@ -112,6 +114,7 @@ class TenantApi {
       statusCode = response.statusCode!;
     } catch (e) {
       log(e.toString());
+      print(e.toString());
     }
 
     return statusCode;
@@ -251,6 +254,41 @@ class TenantApi {
       );
 
       if (response.statusCode == 200) {
+        final jsonData = response.data as List<dynamic>;
+
+        if (jsonData.isNotEmpty) {}
+        print('added successfully');
+      } else if (response.statusCode == 200) {
+        print('added successfully');
+      }
+      statusCode = response.statusCode!;
+    } catch (e) {
+      print(e.toString());
+    }
+    return statusCode;
+  }
+
+  Future<int> createStock(Stock stock, Company company, Staff staff) async {
+    var dio = Dio();
+    int statusCode = 200;
+
+    final url = '${AppUrls.baseUrl}/${company.companyId}/createStock';
+
+    final token = staff.token;
+
+    try {
+      final response = await dio.post(
+        url,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+        data: stock.toMap(),
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
         final jsonData = response.data as List<dynamic>;
 
         if (jsonData.isNotEmpty) {}

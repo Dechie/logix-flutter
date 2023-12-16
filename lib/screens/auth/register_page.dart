@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/models/auth_user.dart';
+import 'package:logixx/screens/warehouse/warehouse_suspend.dart';
 import 'package:logixx/services/shared_prefs.dart';
 import '../../models/admin.dart';
 import 'package:logixx/screens/admin/main/admin_main.dart';
@@ -166,7 +167,7 @@ class _RegisterScreenState extends State<RegisterScreen>
         {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => WarehouseMainPage(
+              builder: (context) => WarehouseSuspendPage(
                 staff: model as Staff,
                 usersList: users,
               ),
