@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1062704987789",
+    "project_id": "logix-ac598",
+    "storage_bucket": "logix-ac598.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062704987789:android:8bb623a53a4a972640ecc4",
+        "android_client_info": {
+          "package_name": "com.example.logixx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChDHCIWjvl8J2lMykbhUfPf9zGv__Sh94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
