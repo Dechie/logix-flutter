@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:logixx/screens/warehouse/main/warehouse_main.dart';
 import 'package:logixx/services/shared_prefs.dart';
 import 'package:logixx/services/tenant_api.dart';
 
 import '../../models/company.dart';
-import '../../models/staff.dart';
+import '../../models/driver.dart';
 import '../../models/auth_user.dart';
 import '../../services/central_api.dart';
 import '../../utils/constants.dart';
+import 'driver_main.dart';
 
 // ignore: must_be_immutable
-class WarehouseSuspendPage extends StatefulWidget {
-  WarehouseSuspendPage({
+class DriverSuspendPage extends StatefulWidget {
+  DriverSuspendPage({
     super.key,
-    required this.staff,
+    required this.driver,
     this.usersList,
   });
   List<AuthedUser>? usersList;
-  final Staff staff;
+  final Driver driver;
 
   @override
-  State<WarehouseSuspendPage> createState() => _WarehouseSuspendPageState();
+  State<DriverSuspendPage> createState() => _DriverSuspendPageState();
 }
 
-class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
+class _DriverSuspendPageState extends State<DriverSuspendPage> {
   List<Company> companies = [];
 
   bool isAppliedToCompany = false;
-  bool isAssignedWarehouse = false;
+  bool isAssignedDriver = false;
   late Company appliedCompany;
 
   final companyIdController = TextEditingController();
@@ -41,38 +41,29 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
     }
   }
 
-  Future<bool> applyToCompany(Company company, Staff staff) async {
+  Future<bool> applyToCompany(Company company, Driver driver) async {
     print('this one executed');
 
     final tenant = TenantApi();
 
     int statusCode = await tenant.applyEmployeeToCompany(
       company: company,
-      theStaff: staff,
-      employeeRole: 'staff',
+      theDriver: driver,
+      employeeRole: 'driver',
     );
     print('status code: $statusCode');
 
     var shPrefs = SharedPrefs();
-    await shPrefs.saveStaffAppliedStatus(staff, company);
+    await shPrefs.saveDriverAppliedStatus(driver, company);
 
     return statusCode == 200;
-  }
-
-  Future<void> fetchCompanies() async {
-    final api = Api();
-    List<Company> fetched = await api.fetchAllCompanies();
-
-    setState(() {
-      companies = fetched;
-    });
   }
 
   void checkAppliedToCompany() async {
     var shPrefs = SharedPrefs();
     List<String> staffList = await shPrefs.getAppliedStaffs();
 
-    String emailInQuestion = widget.staff.email;
+    String emailInQuestion = widget.driver.email;
 
     List<Map<String, String>> emails = staffList.map((stf) {
       List<String> splitted = stf.split(':');
@@ -90,7 +81,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
     });
   }
 
-  void onApplyToCompany(Staff staff) async {
+  void onApplyToCompany(Driver driver) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
     }
@@ -105,7 +96,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
     var shPrefs = SharedPrefs();
     List<String> staffList = await shPrefs.getAppliedStaffs();
 
-    String emailInQuestion = widget.staff.email;
+    String emailInQuestion = widget.driver.email;
 
     List<Map<String, String>> emails = staffList.map((stf) {
       List<String> splitted = stf.split(':');
@@ -118,11 +109,10 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
     Map<String, String> ourMap =
         emails.firstWhere((stf) => stf['email'] == emailInQuestion);
 
-    final staff = widget.staff;
+    final driver = widget.driver;
     int companyId = int.parse(ourMap['company_id']!);
     final tenant = TenantApi();
-    bool isSent = await tenant.sendEmployeeNotif(
-        companyId: companyId, theStaff: staff, employeeRole: 'staff');
+    bool isSent = await tenant.sendEmployeeNotif(companyId: companyId, theDriver: driver, employeeRole: 'driver');
 
     return isSent;
   }
@@ -165,7 +155,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                       // apply to company function
                       print('this one tapped');
                       isAppliedToCompany =
-                          await applyToCompany(company, widget.staff);
+                          await applyToCompany(company, widget.driver);
                       setState(() {});
 
                       Navigator.of(context).pop();
@@ -200,8 +190,8 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => WarehouseMainPage(
-                    staff: widget.staff,
+                  builder: (context) => DriverMainPage(
+                    driver: widget.driver,
                     usersList: widget.usersList,
                   ),
                 ),
@@ -215,7 +205,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
           ? SizedBox(
               width: double.infinity,
               height: double.infinity,
-              child: isAssignedWarehouse
+              child: isAssignedDriver
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -227,7 +217,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                             icon: const Icon(
                               Icons.arrow_forward_ios_rounded,
                             ),
-                            label: const Text('Continue To Warehouse'),
+                            label: const Text('Continue To Driver'),
                           ),
                         ],
                       ),
@@ -287,7 +277,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                   ),
                   InkWell(
                     onTap: () {
-                      onApplyToCompany(widget.staff);
+                      onApplyToCompany(widget.driver);
                     },
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * .7,

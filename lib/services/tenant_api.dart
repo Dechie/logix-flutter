@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/admin.dart';
 import '../models/company.dart';
+import '../models/driver.dart';
 import '../models/project.dart';
 import '../models/staff.dart';
 import '../utils/constants.dart';
@@ -90,25 +91,73 @@ class TenantApi {
     return statusCode;
   }
 
+  /*
   Future<int> applyStaffToCompany(Company company, Staff staff) async {
-    var url = '${AppUrls.baseUrl}/applyStaff';
-
     var dio = Dio();
 
     print('staff toek: ${staff.token}');
     int statusCode = 500;
     try {
-      final response = await dio.post(
-        url,
-        data: {
-          'company_id': company.companyId,
-          'staff_email': staff.email,
-        },
-        options: Options(headers: {
-          'Authorization': 'Bearer ${staff.token}',
-          'Content-Type': 'application/json',
-        }),
-      );
+      print(response.data);
+
+      statusCode = response.statusCode!;
+    } catch (e) {
+      log(e.toString());
+      print(e.toString());
+    }
+
+    return statusCode;
+  }
+  */
+
+  Future<int> applyEmployeeToCompany(
+      {required Company company,
+      required String employeeRole,
+      Driver? theDriver,
+      Staff? theStaff}) async {
+    var dio = Dio();
+    var url = '';
+    late Response response;
+    //print('staff token: ${driver.token}');
+    int statusCode = 500;
+    try {
+      switch (employeeRole) {
+        case "driver":
+          {
+            url = '${AppUrls.baseUrl}/staff/applyDriver';
+            Driver driver = theDriver!;
+            response = await dio.post(
+              url,
+              data: {
+                'company_id': company.companyId,
+                'staff_email': driver.email,
+              },
+              options: Options(headers: {
+                'Authorization': 'Bearer ${driver.token}',
+                'Content-Type': 'application/json',
+              }),
+            );
+          }
+          break;
+        case "staff":
+          {
+            url = '${AppUrls.baseUrl}/staff/applyStaff';
+            Staff staff = theStaff!;
+            response = await dio.post(
+              url,
+              data: {
+                'company_id': company.companyId,
+                'staff_email': staff.email,
+              },
+              options: Options(headers: {
+                'Authorization': 'Bearer ${staff.token}',
+                'Content-Type': 'application/json',
+              }),
+            );
+          }
+          break;
+      }
+
       print(response.data);
 
       statusCode = response.statusCode!;
@@ -289,17 +338,135 @@ class TenantApi {
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        final jsonData = response.data as List<dynamic>;
-
-        if (jsonData.isNotEmpty) {}
-        print('added successfully');
-      } else if (response.statusCode == 200) {
-        print('added successfully');
+        print(response.data);
       }
       statusCode = response.statusCode!;
     } catch (e) {
       print(e.toString());
     }
     return statusCode;
+  }
+
+  Future<List<Stock>> fetchStocks(company, staff) async {
+    var dio = Dio();
+    int statusCode = 200;
+
+    List<Stock> stocks = [];
+
+    final url = '${AppUrls.baseUrl}/${company.companyId}/listStocks';
+    print(url);
+    //final prefs = await SharedPreferences.getInstance();
+    //final token = prefs.getString('token');
+    final token = staff.token ?? '';
+
+    try {
+      final response = await dio.get(
+        url,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        //print(response.data);
+        print('fetched successfully');
+        final jsonData = response.data as List<dynamic>;
+
+        if (jsonData.isNotEmpty) {
+          stocks = jsonData.map((item) => Stock.fromMap(item)).toList();
+        }
+      }
+      statusCode = response.statusCode!;
+    } catch (e) {
+      print(e.toString());
+    }
+
+    return stocks;
+  }
+/*
+  Future<bool> sendStaffNotif(int companyId, Staff staff) async {
+    var dio = Dio();
+
+    final url = '${AppUrls.baseUrl}/$companyId/notifyAdmin';
+
+    
+    return false;
+  }
+  */
+
+  Future<bool> sendEmployeeNotif({
+    required int companyId,
+    required String employeeRole,
+    Driver? theDriver,
+    Staff? theStaff,
+  }) async {
+    var dio = Dio();
+
+    var url = '${AppUrls.baseUrl}/$companyId/notifyAdmin';
+
+    switch (employeeRole) {
+      case 'driver':
+        {
+          Driver driver = theDriver!;
+          url += 'notifyAdmin';
+          var token = driver.token;
+
+          try {
+            final response = await dio.post(
+              url,
+              data: {
+                'company_id': companyId,
+                'staff_email': driver.email,
+              },
+              options: Options(
+                headers: {
+                  'Authorization': 'Bearer $token',
+                  'Content-Type': 'application/json',
+                },
+              ),
+            );
+
+            if (response.statusCode == 200) {
+              return true;
+            }
+          } catch (e) {
+            print(e);
+          }
+        }
+        break;
+      case 'driver':
+        {
+          Staff staff = theStaff!;
+          var token = staff.token;
+
+          try {
+            final response = await dio.post(
+              url,
+              data: {
+                'company_id': companyId,
+                'staff_email': staff.email,
+              },
+              options: Options(
+                headers: {
+                  'Authorization': 'Bearer $token',
+                  'Content-Type': 'application/json',
+                },
+              ),
+            );
+
+            if (response.statusCode == 200) {
+              return true;
+            }
+          } catch (e) {
+            print(e);
+          }
+        }
+        break;
+    }
+
+    return false;
   }
 }

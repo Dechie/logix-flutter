@@ -108,7 +108,7 @@ class Api {
     return (statusCode, companies);
   }
 
-  fetchAllCompanies() async {
+  Future<List<Company>> fetchAllCompanies() async {
     var dio = Dio();
 
     var url = '${AppUrls.baseUrl}/companies';
@@ -129,5 +129,28 @@ class Api {
     }
 
     return companies;
+  }
+
+  Future<Company> findCompany(int companyId) async {
+    var dio = Dio();
+    var url = '${AppUrls.baseUrl}/companies/$companyId';
+
+    late Company company;
+
+    try {
+      final response = await dio.get(url);
+
+      if (response.statusCode == 200) {
+        final jsonData = response.data;
+
+        if (jsonData != null) {
+          company = Company.fromMap(jsonData);
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return company;
   }
 }

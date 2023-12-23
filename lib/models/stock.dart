@@ -4,10 +4,13 @@ enum StockType { shipmentIn, shipmentOut }
 
 class Stock {
   Stock({
+    //required this.companyId,
+    //required this.warehouseId,
     required this.price,
     required this.quantity,
     required this.arrivedDate,
     required this.status,
+
     //required this.shipType,
   });
 
@@ -16,11 +19,17 @@ class Stock {
   //final StockType? shipType;
   final String status;
   final String arrivedDate;
+  //final int companyId;
+  //final int warehouseId;
 
   factory Stock.fromMap(Map<String, dynamic> map) {
+    double priceD = 0.0;
+    priceD += map['price'];
     return Stock(
+      //companyId: map['company_id'] as int,
+      //warehouseId: map['warehouse_id'] as int,
       quantity: map['quantity'] as int,
-      price: map['payment'] as double,
+      price: priceD,
       arrivedDate: map['arrived_at'] as String,
       status: map['status'] as String,
       //shipType: map['shipment_type'] as StockType,

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/auth_user.dart';
 import '../models/company.dart';
+import '../models/driver.dart';
 import '../models/staff.dart';
 
 class SharedPrefs {
@@ -23,7 +24,34 @@ class SharedPrefs {
     final prefs = await SharedPreferences.getInstance();
     List<String>? appliedStaffs = prefs.getStringList('appliedStaffs') ?? [];
 
+    /*
+    appliedStaffs = [];
+    await prefs.setStringList('appliedStaffs', appliedStaffs);
+    */
     return appliedStaffs;
+  }
+
+  Future<void> saveDriverAppliedStatus(Driver driver, Company company) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final email = driver.email;
+    final companyId = company.companyId;
+
+    List<String>? appliedDrivers = prefs.getStringList('appliedDrivers') ?? [];
+
+    appliedDrivers.add('$email:$companyId');
+    await prefs.setStringList('appliedStaffs', appliedDrivers);
+  }
+
+  Future<List<String>> getAppliedDrivers() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? appliedDrivers = prefs.getStringList('appliedDrivers') ?? [];
+
+    /*
+    appliedStaffs = [];
+    await prefs.setStringList('appliedStaffs', appliedStaffs);
+    */
+    return appliedDrivers;
   }
 
   Future<void> saveUserToPrefs(AuthedUser authedUser) async {

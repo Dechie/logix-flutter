@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logixx/screens/splah_screen.dart';
 import 'package:logixx/utils/constants.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
 }
 

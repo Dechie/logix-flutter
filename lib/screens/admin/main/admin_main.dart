@@ -58,10 +58,8 @@ class _AdminMainPageState extends State<AdminMainPage> {
     await central.createCompany(company, widget.admin);
 
     if (!context.mounted) {
-      return;
+      Navigator.of(context).pop();
     }
-
-    Navigator.of(context).pop();
   }
 
   void createNewCompany() {

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/models/company.dart';
 import 'package:logixx/screens/commons.dart';
+import 'package:logixx/screens/warehouse/main/widgets/new_stock.dart';
 
 import '../../../models/staff.dart';
 import '../../../models/auth_user.dart';
 import '../../../utils/constants.dart';
+import 'widgets/stocks_list.dart';
 
 // ignore: must_be_immutable
 class WarehouseMainPage extends StatefulWidget {
@@ -20,12 +22,24 @@ class WarehouseMainPage extends StatefulWidget {
   final Staff staff;
 
   @override
-  _WarehouseMainPageState createState() => _WarehouseMainPageState();
+  State<WarehouseMainPage> createState() => _WarehouseMainPageState();
 }
 
 class _WarehouseMainPageState extends State<WarehouseMainPage> {
   bool _moreAccountsTabSelected = true;
   final commons = CommonMethos();
+  Widget active = const Center(
+    child: Text('main widget'),
+  );
+  late Widget activeScreen;
+
+  @override
+  void initState() {
+    super.initState();
+
+    activeScreen = active;
+  }
+
   @override
   Widget build(BuildContext context) {
     final staff = widget.staff;
@@ -37,6 +51,14 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
           'Logix Staff Page',
           style: GoogleFonts.montserrat(),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back_ios),
+          ),
+        ],
       ),
       drawer: Drawer(
         backgroundColor: GlobalConstants.mainBlue,
@@ -97,7 +119,7 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
                 commons.showMoreAccounts(context, widget.usersList!),
               ListTile(
                 title: Text(
-                  'New Stock',
+                  'Stocks',
                   style: GoogleFonts.montserrat(
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
@@ -106,11 +128,19 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
                     ),
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                  setState(() {
+                    activeScreen = StocksListPage(
+                      company: widget.company!,
+                      staff: widget.staff,
+                    );
+                  });
+                },
               ),
               ListTile(
                 title: Text(
-                  'MyCompany',
+                  'Main Page',
                   style: GoogleFonts.montserrat(
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
@@ -119,7 +149,11 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
                     ),
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  setState(() {
+                    activeScreen = active;
+                  });
+                },
               ),
               ListTile(
                 title: Text(
@@ -138,6 +172,7 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
           ),
         ),
       ),
+      body: activeScreen,
     );
   }
 }
