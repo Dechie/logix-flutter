@@ -3,7 +3,7 @@ import 'package:logixx/utils/constants.dart';
 
 import '../../models/admin.dart';
 import '../../models/company.dart';
-import '../../services/central_api.dart';
+import '../../services/api/central/central_api.dart';
 import 'dashboard_two.dart';
 
 class CompanyDashboard extends StatefulWidget {

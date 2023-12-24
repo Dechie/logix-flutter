@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/screens/warehouse/main/warehouse_main.dart';
 import 'package:logixx/services/shared_prefs.dart';
-import 'package:logixx/services/tenant_api.dart';
 
 import '../../models/company.dart';
 import '../../models/staff.dart';
 import '../../models/auth_user.dart';
-import '../../services/central_api.dart';
+import '../../services/api/central/central_api.dart';
+import '../../services/api/tenant/tenant_api.dart';
 import '../../utils/constants.dart';
 
 // ignore: must_be_immutable
@@ -100,7 +100,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
 
     onApplyCompany(searchCompany);
   }
-
+/*
   Future<bool> onNotifyAdmin() async {
     var shPrefs = SharedPrefs();
     List<String> staffList = await shPrefs.getAppliedStaffs();
@@ -121,11 +121,15 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
     final staff = widget.staff;
     int companyId = int.parse(ourMap['company_id']!);
     final tenant = TenantApi();
+    //bool isSent = await tenant.
+    /*
     bool isSent = await tenant.sendEmployeeNotif(
         companyId: companyId, theStaff: staff, employeeRole: 'staff');
+        */
 
-    return isSent;
+    return true;
   }
+  */
 
   void onApplyCompany(Company company) {
     showModalBottomSheet(
@@ -240,7 +244,9 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                               'You Have not been assigned a warehouse yet. Notify admin to be assigned.',
                             ),
                             TextButton.icon(
-                              onPressed: onNotifyAdmin,
+                              onPressed: () {
+                                //onNotifyAdmin,
+                              },
                               icon: const Icon(
                                 Icons.arrow_forward_ios_rounded,
                               ),

@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:logixx/screens/warehouse/main/warehouse_main.dart';
 import 'package:logixx/screens/warehouse/main/widgets/new_stock.dart';
-import 'package:logixx/services/shared_prefs.dart';
-import 'package:logixx/services/tenant_api.dart';
 
 import '../../../../models/company.dart';
 import '../../../../models/staff.dart';
 import '../../../../models/stock.dart';
-import '../../../../services/central_api.dart';
+import '../../../../services/api/tenant/tenant_api.dart';
 import '../../../../utils/constants.dart';
 
 // ignore: must_be_immutable

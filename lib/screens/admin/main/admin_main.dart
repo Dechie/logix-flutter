@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/models/auth_user.dart';
 import 'package:logixx/screens/admin/company_dashboard_one.dart';
+import 'package:logixx/screens/admin/main/subscreens/employees.dart';
 import 'package:logixx/screens/admin/widgets/get_stats.dart';
 import 'package:logixx/screens/commons.dart';
 
 import '../../../models/admin.dart';
 import '../../../models/company.dart';
-import '../../../services/central_api.dart';
+import '../../../services/api/central/central_api.dart';
 import '../../../utils/constants.dart';
 
 class AdminMainPage extends StatefulWidget {
@@ -27,15 +28,16 @@ class _AdminMainPageState extends State<AdminMainPage> {
   late Admin admin;
   late Widget companiesPage;
   late Widget statsPage;
+  late Widget employeesScreen;
   late Widget activeScreen;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     admin = widget.admin;
     companiesPage = CompanyDashboard(admin: admin);
     statsPage = GetStats();
+    employeesScreen = EmployeesWidget(admin: admin);
     activeScreen = companiesPage;
   }
 
@@ -222,6 +224,24 @@ class _AdminMainPageState extends State<AdminMainPage> {
                   Navigator.pop(context);
                   setState(() {
                     activeScreen = companiesPage;
+                  });
+                },
+              ),
+              ListTile(
+                title: Text(
+                  'Employees',
+                  style: GoogleFonts.montserrat(
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  setState(() {
+                    activeScreen = employeesScreen;
                   });
                 },
               ),

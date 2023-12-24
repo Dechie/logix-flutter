@@ -6,6 +6,7 @@ import '../../models/admin.dart';
 import '../../models/company.dart';
 import '../../models/route.dart';
 import '../../utils/constants.dart';
+import 'main/subscreens/admin_warehouse.dart';
 import 'main/subscreens/projects_screen.dart';
 import 'main/subscreens/routes_screen.dart';
 
@@ -29,7 +30,7 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   late Widget activeScreen;
 
-  var projectScreen, routeScreen, generalScreen;
+  var projectScreen, routeScreen, generalScreen, adminWarehouseScreen;
   List<String> projects = [];
   List<TravelRoute> routes = [];
   late int tenantId;
@@ -46,13 +47,22 @@ class _DashBoardState extends State<DashBoard> {
       admin: widget.admin,
       company: widget.company,
     );
+    adminWarehouseScreen = AdminWarehouseScreen(
+      admin: widget.admin,
+      company: widget.company,
+    );
     generalScreen = CompanyGeneral(
       company: widget.company,
       admin: widget.admin,
     );
     activeScreen = projectScreen;
 
-    screenWithIndex = [routeScreen, projectScreen, generalScreen];
+    screenWithIndex = [
+      routeScreen,
+      projectScreen,
+      generalScreen,
+      adminWarehouseScreen
+    ];
   }
 
   void onRefresh() {

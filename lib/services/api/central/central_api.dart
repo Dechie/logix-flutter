@@ -1,10 +1,9 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:logixx/models/admin.dart';
 import 'package:logixx/models/company.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../utils/constants.dart';
+
+import '../../../utils/constants.dart';
 
 class Api {
   createCompany(Company company, Admin admin) async {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../models/admin.dart';
 import '../../../../models/company.dart';
-import '../../../../services/tenant_api.dart';
+import '../../../../services/api/tenant/tenant_api.dart';
 
 class ProjectScreen extends StatefulWidget {
   const ProjectScreen({

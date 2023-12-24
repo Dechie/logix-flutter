@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:logixx/services/tenant_api.dart';
 
 import '../../../../models/company.dart';
 import '../../../../models/staff.dart';
 import '../../../../models/stock.dart';
+import '../../../../services/api/tenant/tenant_api.dart';
 
 class NewStock extends StatefulWidget {
   const NewStock({

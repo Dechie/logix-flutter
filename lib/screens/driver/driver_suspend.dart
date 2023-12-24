@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/services/shared_prefs.dart';
-import 'package:logixx/services/tenant_api.dart';
 
 import '../../models/company.dart';
 import '../../models/driver.dart';
 import '../../models/auth_user.dart';
-import '../../services/central_api.dart';
+import '../../services/api/central/central_api.dart';
+import '../../services/api/tenant/tenant_api.dart';
 import '../../utils/constants.dart';
 import 'driver_main.dart';
 
@@ -35,11 +35,6 @@ class _DriverSuspendPageState extends State<DriverSuspendPage> {
   int companyId = 0;
   final _formKey = GlobalKey<FormState>();
 
-  void sendFormData() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-    }
-  }
 
   Future<bool> applyToCompany(Company company, Driver driver) async {
     print('this one executed');
