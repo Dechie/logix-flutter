@@ -14,8 +14,6 @@ import '../../../models/staff.dart';
 import '../../../models/warehouse.dart';
 import '../../../utils/constants.dart';
 
-
-
 class TenantApi {
   Future<(int, List<String>)> fetchProjects(
       int selectTenant, Admin admin) async {
@@ -496,8 +494,9 @@ class TenantApi {
   createWarehouse(Warehouse warehouse, Admin admin, Company company) async {
     var dio = Dio();
     int statusCode = 200;
+    print('onCreate Warehouse function');
 
-    final url = '${AppUrls.baseUrl}/${company.companyId}/createWarehouse';
+    final url = '${AppUrls.baseUrl}/${company.companyId}/warehouses';
 
     final token = admin.token;
 
@@ -524,13 +523,13 @@ class TenantApi {
   }
 
   Future<List<Warehouse>> fetchWarehouses(Company company, Admin admin) async {
-var dio = Dio();
+    var dio = Dio();
     int statusCode = 200;
 
-    List<Warehouse> warehouses= [];
+    List<Warehouse> warehouses = [];
 
-    final url = '${AppUrls.baseUrl}/${company.companyId}/listStocks';
-   
+    final url = '${AppUrls.baseUrl}/${company.companyId}/warehouses';
+
     final token = admin.token ?? '';
 
     try {
@@ -559,5 +558,83 @@ var dio = Dio();
     }
 
     return warehouses;
+  }
+
+  Future<List<Driver>> fetchDrivers(int tenantId, Admin admin) async {
+    var dio = Dio();
+    int statusCode = 200;
+
+    final url = '${AppUrls.baseUrl}/$tenantId/drivers';
+    print(url);
+    //final prefs = await SharedPreferences.getInstance();
+    //final token = prefs.getString('token');
+    final token = admin.token ?? '';
+
+    List<Driver> drivers = [];
+
+    try {
+      final response = await dio.get(
+        url,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        //print(response.data);
+        print('fetched successfully');
+        final jsonData = response.data as List<dynamic>;
+
+        if (jsonData.isNotEmpty) {
+          drivers = jsonData.map((item) => Driver.fromMap(item)).toList();
+        }
+      }
+      statusCode = response.statusCode!;
+    } catch (e) {
+      print(e.toString());
+    }
+
+    return drivers;
+  }
+
+  Future<List<Staff>> fetchStaffs(int tenantId, Admin admin) async {
+    var dio = Dio();
+    int statusCode = 200;
+
+    final url = '${AppUrls.baseUrl}/$tenantId/staffs';
+    print(url);
+    final token = admin.token ?? '';
+
+    List<Staff> staffs = [];
+
+    try {
+      final response = await dio.get(
+        url,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        //print(response.data);
+        print('fetched successfully');
+        final jsonData = response.data as List<dynamic>;
+
+        if (jsonData.isNotEmpty) {
+          staffs = jsonData.map((item) => Staff.fromMap(item)).toList();
+        }
+      }
+      statusCode = response.statusCode!;
+    } catch (e) {
+      print(e.toString());
+    }
+
+    return staffs;
   }
 }

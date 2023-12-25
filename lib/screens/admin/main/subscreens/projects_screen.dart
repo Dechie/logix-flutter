@@ -53,11 +53,12 @@ class _ProjectScreenState extends State<ProjectScreen> {
     } else if (statusCode == 302) {
       Navigator.pop(context);
     }
-  }
+  } 
 
   void createProject() async {
     //final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
     showModalBottomSheet(
+      isScrollControlled: true,
         context: context,
         builder: (context) {
           /*

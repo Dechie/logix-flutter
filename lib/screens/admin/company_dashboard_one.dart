@@ -55,6 +55,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
 
   void createNewCompany() {
     showModalBottomSheet(
+      isScrollControlled: true,
         context: context,
         builder: (ctx) {
           return Padding(

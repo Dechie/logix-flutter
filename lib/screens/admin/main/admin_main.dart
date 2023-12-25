@@ -28,7 +28,6 @@ class _AdminMainPageState extends State<AdminMainPage> {
   late Admin admin;
   late Widget companiesPage;
   late Widget statsPage;
-  late Widget employeesScreen;
   late Widget activeScreen;
 
   @override
@@ -37,7 +36,6 @@ class _AdminMainPageState extends State<AdminMainPage> {
     admin = widget.admin;
     companiesPage = CompanyDashboard(admin: admin);
     statsPage = GetStats();
-    employeesScreen = EmployeesWidget(admin: admin);
     activeScreen = companiesPage;
   }
 
@@ -66,6 +64,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
 
   void createNewCompany() {
     showModalBottomSheet(
+      isScrollControlled: true,
         context: context,
         builder: (ctx) {
           return Padding(
@@ -240,9 +239,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
                 ),
                 onTap: () {
                   Navigator.pop(context);
-                  setState(() {
-                    activeScreen = employeesScreen;
-                  });
+                  setState(() {});
                 },
               ),
               ListTile(

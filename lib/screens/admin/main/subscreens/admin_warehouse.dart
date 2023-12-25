@@ -22,7 +22,8 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
   final _formKey = GlobalKey<FormState>();
 
   String name = '';
-  String location = '';
+  String address = '';
+  List<String> addressCities = ['Addis Ababa', 'Dire Dawa', 'Adama'];
 
   void sendFormData() async {
     if (_formKey.currentState!.validate()) {
@@ -34,18 +35,20 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
   final tenantApi = TenantApi();
 
   final _nameController = TextEditingController();
+  final _addressController = TextEditingController();
 
-  void onCreateWarehouse() async {
+  Future<int> onCreateWarehouse() async {
     late int statusCode;
     name = _nameController.text;
 
-    var newWarehouse = Warehouse(name: name, location: location);
+    var newWarehouse = Warehouse(name: name, address: address);
 
     statusCode = await tenantApi.createWarehouse(
         newWarehouse, widget.admin, widget.company);
     if (statusCode == 200) {
       fetchWarehouses(widget.company.companyId!);
     }
+    return statusCode;
   }
 
   void refresh() async {
@@ -54,11 +57,13 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
 
   void fetchWarehouses(int tenantId) async {
     int statusCode = 0;
+    print('fetch Warehouses executed');
     List<Warehouse> fetched = [];
     fetched = await tenantApi.fetchWarehouses(widget.company, widget.admin);
     if (fetched.isNotEmpty) {
       setState(() {
         warehouses = fetched;
+        print(warehouses);
       });
     }
   }
@@ -66,38 +71,92 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
   void createWarehouse() async {
     //final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
     showModalBottomSheet(
+
+      isScrollControlled: true,
         context: context,
         builder: (context) {
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _nameController,
-                    maxLength: 50,
-                    decoration: const InputDecoration(
-                      label: Text('name'),
+          return Container(
+              padding: const EdgeInsets.all(10),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * .65,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 20,
+                ),
+                child: Column(
+                  children: [
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              label: const Text('Quantity'),
+                            ),
+                            validator: (value) {
+                              if (value == null ||
+                                  value.isEmpty ||
+                                  value.trim().length <= 1 ||
+                                  value.trim().length >= 50) {
+                                return 'Please enter a value';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              name = value!;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          SizedBox(
+                            width: 165,
+                            child: DropdownMenu<String>(
+                              width: 160,
+                              initialSelection: '',
+                              controller: _addressController,
+                              requestFocusOnTap: true,
+                              label: const Text('Choose address'),
+                              onSelected: (value) {
+                                setState(() {
+                                  address = value!;
+                                });
+                              },
+                              dropdownMenuEntries: addressCities
+                                  .map<DropdownMenuEntry<String>>(
+                                    (type) => DropdownMenuEntry<String>(
+                                      value: type,
+                                      label: type,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    TextButton(
+                      onPressed: () async {
+                        int stCode = await onCreateWarehouse();
+
+                        if (stCode == 200 || stCode == 201) {
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: const Text('Submit'),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 30),
-                TextButton(
-                  onPressed: () {
-                    onCreateWarehouse();
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Create'),
-                ),
-              ],
-            ),
-          );
+              ));
         });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchWarehouses(widget.company.companyId!);
   }
@@ -106,15 +165,14 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: warehouses.isNotEmpty
-          ? Padding(
-              padding: const EdgeInsets.all(20),
+          ? Center(
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * .8,
-                height: 500,
+                height: MediaQuery.of(context).size.height * .76,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
+                     const Text(
                       'Warehouses',
                       style: TextStyle(
                         color: Colors.blue,
@@ -123,7 +181,7 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
                       ),
                     ),
                     Expanded(
-                      child: ListView.builder(
+                      child: ListView.separated(
                         itemCount: warehouses.length,
                         itemBuilder: (ctx, index) => Card(
                           elevation: 5,
@@ -137,9 +195,9 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
                             ),
                             subtitle: Row(
                               children: [
-                                const Icon(Icons.location_city),
+                                const Icon(Icons.location_on),
                                 Text(
-                                  warehouses[index].location,
+                                  warehouses[index].address,
                                   style: const TextStyle(
                                     fontSize: 15,
                                   ),
@@ -148,6 +206,8 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
                             ),
                           ),
                         ),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 10),
                       ),
                     ),
                   ],
@@ -160,6 +220,7 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           createWarehouse();
+          refresh();
         },
         child: const Icon(Icons.add),
       ),

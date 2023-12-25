@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/screens/admin/main/subscreens/company_general.dart';
+import 'package:logixx/screens/admin/main/subscreens/employees.dart';
 
 import '../../models/admin.dart';
 import '../../models/company.dart';
@@ -30,7 +31,11 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   late Widget activeScreen;
 
-  var projectScreen, routeScreen, generalScreen, adminWarehouseScreen;
+  var projectScreen,
+      routeScreen,
+      generalScreen,
+      adminWarehouseScreen,
+      employeesScreen;
   List<String> projects = [];
   List<TravelRoute> routes = [];
   late int tenantId;
@@ -55,13 +60,20 @@ class _DashBoardState extends State<DashBoard> {
       company: widget.company,
       admin: widget.admin,
     );
+
+    employeesScreen = EmployeesWidget(
+      admin: widget.admin,
+      company: widget.company,
+    );
+
     activeScreen = projectScreen;
 
     screenWithIndex = [
       routeScreen,
       projectScreen,
       generalScreen,
-      adminWarehouseScreen
+      adminWarehouseScreen,
+      employeesScreen,
     ];
   }
 
@@ -258,6 +270,36 @@ class _DashBoardState extends State<DashBoard> {
               ),
               onTap: () {
                 switchScreen(1);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Warehouses',
+                style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              onTap: () {
+                switchScreen(3);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Employees',
+                style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              onTap: () {
+                switchScreen(4);
                 Navigator.pop(context);
               },
             ),
