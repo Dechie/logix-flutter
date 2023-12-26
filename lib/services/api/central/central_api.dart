@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:logixx/models/admin.dart';
 import 'package:logixx/models/company.dart';
@@ -33,6 +35,31 @@ class Api {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  Future<Company?> getOneCompany(int companyId) async {
+    var dio = Dio();
+
+    final url = '${AppUrls.baseUrl}/companies/$companyId';
+
+    Company? searchCompany;
+
+    try {
+      Response response = await dio.get(url);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print(response.data);
+        if (response.data != null) {
+          var compJson = response.data;
+
+          searchCompany = Company.fromMap(compJson);
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+    print('${searchCompany!.companyId}: ${searchCompany.name}');
+    return searchCompany;
   }
 
   Future<List<Company>> fetchCompanies(String token) async {
@@ -134,7 +161,7 @@ class Api {
     var dio = Dio();
     var url = '${AppUrls.baseUrl}/companies/$companyId';
 
-    late Company company;
+    var company;
 
     try {
       final response = await dio.get(url);

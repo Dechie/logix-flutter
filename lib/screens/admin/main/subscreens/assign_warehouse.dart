@@ -38,8 +38,9 @@ class _AssignWarehouseWidgetState extends State<AssignWarehouseWidget> {
   }
 
   void onAssignWarehouse(Warehouse warehouse, Staff staff) async {
-    
+    int statusCode = await tenantApi.applyStaffToWarehouse(warehouse, staff, widget.admin, widget.company);
   }
+
   @override
   void initState() {
     super.initState();
@@ -71,11 +72,14 @@ class _AssignWarehouseWidgetState extends State<AssignWarehouseWidget> {
                           context: context,
                           builder: (context) => AlertDialog(
                             title: const Text('Apply Staff To Warehouse?'),
-                            content: Column(
-                              children: [
-                                Text('Staff: ${staff.name}'),
-                                Text('Warehouse: ${warehouses[index].name}'),
-                              ],
+                            content: SizedBox(
+                              width: 400,
+                              child: Column(
+                                children: [
+                                  Text('Staff: ${staff.name}'),
+                                  Text('Warehouse: ${warehouses[index].name}'),
+                                ],
+                              ),
                             ),
                             actions: [
                               TextButton(

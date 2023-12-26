@@ -6,6 +6,7 @@ import 'package:logixx/services/shared_prefs.dart';
 import '../../models/company.dart';
 import '../../models/staff.dart';
 import '../../models/auth_user.dart';
+import '../../models/warehouse.dart';
 import '../../services/api/central/central_api.dart';
 import '../../services/api/tenant/tenant_api.dart';
 import '../../utils/constants.dart';
@@ -29,7 +30,8 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
 
   bool isAppliedToCompany = false;
   bool isAssignedWarehouse = false;
-  late Company appliedCompany;
+  Company? appliedCompany;
+  Warehouse? assigedWarehouse;
 
   final companyIdController = TextEditingController();
   int companyId = 0;
@@ -65,7 +67,15 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
 
     setState(() {
       companies = fetched;
+      print(companies);
     });
+  }
+
+  Future<Company?> getCompany(int companyId) async {
+    final api = Api();
+    Company? found = await api.getOneCompany(companyId);
+
+    return found;
   }
 
   void checkAppliedToCompany() async {
@@ -84,10 +94,50 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
 
     List<String> emls = staffList.map((stf) => stf.split(':').first).toList();
 
-    setState(() {
-      //isAppliedToCompany = emails.any((map) => map['email'] == emailInQuestion);
-      isAppliedToCompany = emls.contains(emailInQuestion);
-    });
+    //isAppliedToCompany = emails.any((map) => map['email'] == emailInQuestion);
+    isAppliedToCompany = emls.contains(emailInQuestion);
+
+    if (isAppliedToCompany) {
+      var matchVal =
+          emails.firstWhere((entity) => entity['email'] == emailInQuestion);
+      int? compId = int.parse(matchVal['cId']!);
+      appliedCompany = await getCompany(compId);
+      //companies.firstWhere((comp) => comp.companyId! == companyId);
+      setState(() {});
+    }
+  }
+
+  void checkAssignedWarehouse() async {
+    var shPrefs = SharedPrefs();
+    final wh = Warehouse(name: 'here', address: 'addis');
+    List<String> staffList =
+        await shPrefs.getWarehouseAssignedStaffs(widget.staff, wh);
+
+    String emailInQuestion = widget.staff.email;
+
+    List<Map<String, String>> emails = staffList.map((stf) {
+      List<String> splitted = stf.split(':');
+      return {
+        'email': splitted.first,
+        'wId': splitted.last,
+      };
+    }).toList();
+
+    List<String> emls = staffList.map((stf) => stf.split(':').first).toList();
+
+    //isAppliedToCompany = emails.any((map) => map['email'] == emailInQuestion);
+    //isAssignedWarehouse = emls.contains(emailInQuestion);
+
+    if (isAssignedWarehouse) {
+      var matchVal =
+          emails.firstWhere((entity) => entity['email'] == emailInQuestion);
+      /*
+      int? wareId = int.parse(matchVal['cId']!);
+      assignedWarehouse = await getWarehouse(wareId);
+      //companies.firstWhere((comp) => comp.companyId! == companyId);
+      setState(() {});
+      */
+    }
   }
 
   void onApplyToCompany(Staff staff) async {
@@ -131,6 +181,14 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
   }
   */
 
+  void onCheckAppliedToWarehouse(Company company, Staff staff) async {
+    final tenantApi = TenantApi();
+    bool appliedToWarehouse =
+        await tenantApi.checkWarehouseToCompany(company, staff);
+    isAssignedWarehouse = appliedToWarehouse;
+    setState(() {});
+  }
+
   void onApplyCompany(Company company) {
     showModalBottomSheet(
         context: context,
@@ -170,6 +228,10 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                       print('this one tapped');
                       isAppliedToCompany =
                           await applyToCompany(company, widget.staff);
+
+                      if (isAppliedToCompany) {
+                        appliedCompany = company;
+                      }
                       setState(() {});
 
                       Navigator.of(context).pop();
@@ -206,6 +268,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                 MaterialPageRoute(
                   builder: (context) => WarehouseMainPage(
                     staff: widget.staff,
+                    company: appliedCompany!,
                     usersList: widget.usersList,
                   ),
                 ),
@@ -221,19 +284,33 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
               height: double.infinity,
               child: isAssignedWarehouse
                   ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                              'you have been successfully assigned a warehouse.'),
-                          TextButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.arrow_forward_ios_rounded,
+                      child: SizedBox(
+                        width: 300,
+                        height: 500,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                                'you have been successfully assigned a warehouse.'),
+                            TextButton.icon(
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (context) => WarehouseMainPage(
+                                      staff: widget.staff,
+                                      company: appliedCompany!,
+                                      usersList: widget.usersList,
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.arrow_forward_ios_rounded,
+                              ),
+                              label: const Text('Continue To Warehouse'),
                             ),
-                            label: const Text('Continue To Warehouse'),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     )
                   : Center(
@@ -246,6 +323,8 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                             TextButton.icon(
                               onPressed: () {
                                 //onNotifyAdmin,
+                                onCheckAppliedToWarehouse(
+                                    appliedCompany!, widget.staff);
                               },
                               icon: const Icon(
                                 Icons.arrow_forward_ios_rounded,
@@ -301,6 +380,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                       child: const DecoratedBox(
                         decoration:
                             BoxDecoration(color: GlobalConstants.mainBlue),
+                        child: Text('Apply'),
                       ),
                     ),
                   ),

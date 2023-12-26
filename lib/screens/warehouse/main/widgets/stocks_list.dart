@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/screens/warehouse/main/widgets/new_stock.dart';
+import 'package:logixx/services/sqlite/db_helper.dart';
 
+import '../../../../models/batch.dart';
 import '../../../../models/company.dart';
 import '../../../../models/staff.dart';
 import '../../../../models/stock.dart';
@@ -24,6 +27,27 @@ class StocksListPage extends StatefulWidget {
 
 class _StocksListPageState extends State<StocksListPage> {
   List<Stock> stocks = [];
+  List<TheBatch> batches = [];
+
+  String batchName = '';
+  final batchameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  Future<int> onCreateBatch() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      var batch = TheBatch(name: batchName);
+
+      var dbHelper = DatabaseHelper();
+      dbHelper.insertBatch(batch);
+
+      batches.add(batch);
+    }
+
+    return 300;
+  }
+
   Future<void> fetchStocks() async {
     final tenant = TenantApi();
     List<Stock> fetched =
@@ -56,6 +80,97 @@ class _StocksListPageState extends State<StocksListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => SizedBox(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * .67,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 30,
+                    ),
+                    child: Column(
+                      children: [
+                        Form(
+                          key: _formKey,
+                          child: TextFormField(
+                            controller: batchameController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              label: const Text('give name to batch'),
+                            ),
+                            validator: (value) {
+                              if (value == null ||
+                                  value.isEmpty ||
+                                  value.trim().length <= 1 ||
+                                  value.trim().length >= 50) {
+                                return 'please enter valid name';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              batchName = value!;
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        TextButton(
+                          onPressed: onCreateBatch,
+                          child: const Text('Submit'),
+                        ),
+                        /*
+                        Container(
+                          width: double.infinity,
+                          height: MediaQuery.of(context).size.height * .45,
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 3),
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Column(children: [
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(25),
+                                    topRight: Radius.circular(25),
+                                  ),
+                                  color: GlobalConstants.mainBlue
+                                      .withOpacity(0.35),
+                                ),
+                                child: Text(
+                                  'Choose A few stocks to start',
+                                  style: GoogleFonts.roboto(
+                                    textStyle: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ]),
+                        ),
+                        */
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(Icons.add),
+            label: const Text('Prepare Batch'),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(
           Icons.add,
@@ -78,12 +193,49 @@ class _StocksListPageState extends State<StocksListPage> {
               child: ListTile(
                   minLeadingWidth: 5,
                   leading: Container(
-                    width: 20,
-                    height: 20,
+                    width: 15,
+                    height: 15,
                     decoration: BoxDecoration(
                       color: statusMap[stocks[index].status],
                       borderRadius: BorderRadius.circular(5),
                     ),
+                  ),
+                  trailing: PopupMenuButton(
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 0,
+                        child: Text('Add To batch'),
+                      ),
+                    ],
+                    onSelected: (value) {
+                      if (value == 0) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => Material(
+                            child: SizedBox(
+                              width: 200,
+                              height: 400,
+                              child: ListView.separated(
+                                itemCount: batches.length,
+                                itemBuilder: (context, idx) => ListTile(
+                                  title: Text(batches[idx].name),
+                                  onTap: () {
+                                    // there are `index` number of stocks and `idx` number of batches
+                                    // the stocks for the one of the batch lists
+                                    // this is a list of lists soooo
+                                    batches[idx].stocks = [];
+                                    batches[idx].stocks!.add(stocks[index]);
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                separatorBuilder: (context, idx) =>
+                                    const Divider(),
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -91,13 +243,13 @@ class _StocksListPageState extends State<StocksListPage> {
                       Text(
                         stocks[index].status,
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                         ),
                       ),
                       Text(
                         'Batch: ${stocks[index].quantity}',
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                         ),
                       ),
                     ],
@@ -111,8 +263,8 @@ class _StocksListPageState extends State<StocksListPage> {
                           fontSize: 14,
                         ),
                       ),
-                      const Spacer(),
-                      const Icon(Icons.calendar_view_day),
+                      const SizedBox(width: 20),
+                      const Icon(Icons.date_range),
                       Text(
                         stocks[index].arrivedDate,
                         style: const TextStyle(
@@ -123,7 +275,7 @@ class _StocksListPageState extends State<StocksListPage> {
                   )),
             ),
           ),
-          separatorBuilder: (ctx, index) => const SizedBox(height: 30),
+          separatorBuilder: (ctx, index) => const SizedBox(height: 20),
         ),
       ),
     );

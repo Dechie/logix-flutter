@@ -157,6 +157,32 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
               ),
               ListTile(
                 title: Text(
+                  'Orders',
+                  style: GoogleFonts.montserrat(
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                onTap: () {},
+              ),
+              ListTile(
+                title: Text(
+                  'MyCompany',
+                  style: GoogleFonts.montserrat(
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                onTap: () {},
+              ),
+              ListTile(
+                title: Text(
                   'MyCompany',
                   style: GoogleFonts.montserrat(
                     textStyle: const TextStyle(

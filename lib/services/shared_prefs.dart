@@ -6,6 +6,7 @@ import '../models/auth_user.dart';
 import '../models/company.dart';
 import '../models/driver.dart';
 import '../models/staff.dart';
+import '../models/warehouse.dart';
 
 class SharedPrefs {
   Future<void> saveStaffAppliedStatus(Staff staff, Company company) async {
@@ -24,11 +25,43 @@ class SharedPrefs {
     final prefs = await SharedPreferences.getInstance();
     List<String>? appliedStaffs = prefs.getStringList('appliedStaffs') ?? [];
 
-    /*
+/*
+    use this code whenever you want to refresh registered users
+
     appliedStaffs = [];
     await prefs.setStringList('appliedStaffs', appliedStaffs);
     */
+
     return appliedStaffs;
+  }
+
+  Future<void> saveWarehouseAssignedStaffs(
+      Staff staff, Warehouse warehouse) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final email = staff.email;
+    final warehouseName = warehouse.name;
+
+    List<String>? assignedStaffs =
+        prefs.getStringList('warehouseAssignedStaffs') ?? [];
+
+    assignedStaffs.add('$email:$warehouseName');
+    await prefs.setStringList('warehouseAssignedStaffs', assignedStaffs);
+  }
+
+  getWarehouseAssignedStaffs(Staff staff, Warehouse warehouse) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? assignedStaffs =
+        prefs.getStringList('warehouseAssignedStaffs') ?? [];
+
+/*
+    use this code whenever you want to refresh registered users
+
+    */
+    assignedStaffs = [];
+    await prefs.setStringList('warehouseAssignedStaffs', assignedStaffs);
+
+    return assignedStaffs;
   }
 
   Future<void> saveDriverAppliedStatus(Driver driver, Company company) async {

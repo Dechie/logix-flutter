@@ -163,7 +163,7 @@ class TenantApi {
 
       statusCode = response.statusCode!;
     } catch (e) {
-      log(e.toString());
+      //log(e.toString());
       print(e.toString());
     }
 
@@ -491,7 +491,8 @@ class TenantApi {
     return false;
   }
 
-  createWarehouse(Warehouse warehouse, Admin admin, Company company) async {
+  Future<int> createWarehouse(
+      Warehouse warehouse, Admin admin, Company company) async {
     var dio = Dio();
     int statusCode = 200;
     print('onCreate Warehouse function');
@@ -636,5 +637,60 @@ class TenantApi {
     }
 
     return staffs;
+  }
+
+  Future<int> applyStaffToWarehouse(
+      Warehouse warehouse, Staff staff, Admin admin, Company company) async {
+    var dio = Dio();
+    int statusCode = 200;
+    print('onCreate Warehouse function');
+
+    final url = '${AppUrls.baseUrl}/${company.companyId}/warehouses';
+
+    final token = admin.token;
+
+    try {
+      final response = await dio.post(
+        url,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+        data: warehouse.toMap(),
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        print(response.data);
+      }
+      statusCode = response.statusCode!;
+    } catch (e) {
+      print(e.toString());
+    }
+    return statusCode;
+  }
+
+  Future<bool> checkWarehouseToCompany(Company company, Staff staff) async {
+    var dio = Dio();
+    final url =
+        '${AppUrls.baseUrl}/${company.companyId!}/checkStaffAppliedToWarehouse';
+
+    try {
+      Response response = await dio.post(
+        url,
+        data: {
+          'staff_email': staff.email,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print(response.data);
+        return response.data['isNull'];
+      }
+    } catch (e) {
+      print(e);
+    }
+    return false;
   }
 }

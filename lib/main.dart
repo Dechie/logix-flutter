@@ -3,6 +3,8 @@ import 'package:logixx/screens/splah_screen.dart';
 import 'package:logixx/utils/constants.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 
