@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/models/company.dart';
 import 'package:logixx/screens/commons.dart';
+import 'package:logixx/screens/warehouse/main/widgets/create_order.dart';
 import 'package:logixx/screens/warehouse/main/widgets/new_stock.dart';
 
 import '../../../models/staff.dart';
@@ -166,7 +167,15 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
                     ),
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                  setState(() {
+                    activeScreen = CreateStock(
+                      company: widget.company!,
+                      staff: widget.staff,
+                    );
+                  });
+                },
               ),
               ListTile(
                 title: Text(

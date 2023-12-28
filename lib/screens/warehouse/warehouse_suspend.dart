@@ -81,6 +81,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
   void checkAppliedToCompany() async {
     var shPrefs = SharedPrefs();
     List<String> staffList = await shPrefs.getAppliedStaffs();
+    print(staffList.isNotEmpty);
 
     String emailInQuestion = widget.staff.email;
 

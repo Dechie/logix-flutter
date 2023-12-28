@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logixx/screens/warehouse/main/widgets/new_stock.dart';
 import 'package:logixx/services/sqlite/db_helper.dart';
+import 'package:sqflite/sqflite.dart';
 
-import '../../../../models/batch.dart';
 import '../../../../models/company.dart';
+import '../../../../models/order.dart';
 import '../../../../models/staff.dart';
 import '../../../../models/stock.dart';
 import '../../../../services/api/tenant/tenant_api.dart';
@@ -27,7 +28,7 @@ class StocksListPage extends StatefulWidget {
 
 class _StocksListPageState extends State<StocksListPage> {
   List<Stock> stocks = [];
-  List<TheBatch> batches = [];
+  List<Order> batches = [];
 
   String batchName = '';
   final batchameController = TextEditingController();
@@ -37,15 +38,28 @@ class _StocksListPageState extends State<StocksListPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      var batch = TheBatch(name: batchName);
+      var batch = Order(name: batchName, staffEmail: widget.staff.email);
 
-      var dbHelper = DatabaseHelper();
-      dbHelper.insertBatch(batch);
+      //var dbHelper = DatabaseHelper();
+      DatabaseHelper dbHelper = DatabaseHelper.instance;
+      dbHelper.insertOrder(batch);
 
       batches.add(batch);
     }
 
     return 300;
+  }
+
+  void fetchBatches() async {
+    //var dbHelper = DatabaseHelper();
+    DatabaseHelper dbHelper = DatabaseHelper.instance;
+    await dbHelper.database; // waits until db is initialized
+    List<Order> fetched = await dbHelper.retrieveOrders() as List<Order>;
+    if (fetched.isNotEmpty) {
+      setState(() {
+        batches = fetched;
+      });
+    }
   }
 
   Future<void> fetchStocks() async {
@@ -71,6 +85,7 @@ class _StocksListPageState extends State<StocksListPage> {
   void initState() {
     super.initState();
     fetchStocks();
+    fetchBatches();
   }
 
   Map<String, Color> statusMap = {
@@ -82,6 +97,35 @@ class _StocksListPageState extends State<StocksListPage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          TextButton.icon(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => Material(
+                  child: SizedBox(
+                    width: 200,
+                    height: 400,
+                    child: ListView.separated(
+                      itemCount: batches.length,
+                      itemBuilder: (context, idx) => ListTile(
+                        title: Text(batches[idx].name),
+                        onTap: () {
+                          // there are `index` number of stocks and `idx` number of batches
+                          // the stocks for the one of the batch lists
+                          // this is a list of lists soooo
+
+                          Navigator.pop(context);
+                        },
+                      ),
+                      separatorBuilder: (context, idx) => const Divider(),
+                    ),
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(Icons.list),
+            label: const Text('List Batches'),
+          ),
           TextButton.icon(
             onPressed: () {
               showModalBottomSheet(

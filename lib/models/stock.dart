@@ -10,14 +10,14 @@ class Stock {
     required this.quantity,
     required this.arrivedDate,
     required this.status,
-    this.batchId,
+    this.orderId,
 
     //required this.shipType,
   });
 
   final double price;
   final int quantity;
-  int? batchId;
+  int? orderId;
   //final StockType? shipType;
   final String status;
   final String arrivedDate;

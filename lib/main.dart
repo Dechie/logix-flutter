@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:logixx/screens/splah_screen.dart';
+import 'package:logixx/services/sqlite/db_helper.dart';
 import 'package:logixx/utils/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  //DatabaseHelper dbHelper =
   runApp(const MyApp());
 }
 

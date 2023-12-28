@@ -1,18 +1,19 @@
 import 'package:logixx/models/stock.dart';
 
-class TheBatch {
-// la ahun endiw yikemet
-  TheBatch({
+class Order {
+  Order({
     required this.name,
+    required this.staffEmail,
     this.stocks,
   });
 
   final String name;
+  final String staffEmail;
   List<Stock>? stocks = [];
 
-  factory TheBatch.fromMap(Map<String, dynamic> map) {
-   
-    return TheBatch(
+  factory Order.fromMap(Map<String, dynamic> map) {
+    return Order(
+      staffEmail: map['staff_email'],
       name: map['name'],
     );
   }
@@ -20,6 +21,7 @@ class TheBatch {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
+      'staff_email': staffEmail,
     };
   }
 }
