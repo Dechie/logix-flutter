@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:logixx/screens/warehouse/main/widgets/sub_widgets/send_order.dart';
+import 'package:logixx/utils/constants.dart';
 
 import '../../../../models/company.dart';
 import '../../../../models/order.dart';
@@ -29,6 +31,17 @@ class _CreateStockState extends State<CreateStock> {
   String orderName = '';
   final orderNameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  void sendOrder(Order order) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SendOrderPage(
+        staff: widget.staff,
+        company: widget.company,
+        order: order,
+      ),
+    );
+  }
 
   Future<int> onCreateOrder() async {
     if (_formKey.currentState!.validate()) {
@@ -79,12 +92,18 @@ class _CreateStockState extends State<CreateStock> {
   }
 
   void addStocksToOrder(Order order, List<Stock> stocks) async {
+    setState(() {
+      order.stocks = stocks;
+    });
+    /*
     DatabaseHelper dbHelper = DatabaseHelper.instance;
     await dbHelper.database; // waits until db is initialized
     dbHelper.insertStocks(order, stocks);
 
     List<Stock> test = await dbHelper.retrieveStocks(order);
+    
     print(test);
+    */
   }
 
   @override
@@ -159,83 +178,101 @@ class _CreateStockState extends State<CreateStock> {
           Padding(
             padding: const EdgeInsets.all(20),
             child: SizedBox(
-              width: MediaQuery.of(context).size.width * .7,
-              height: MediaQuery.of(context).size.height * .58,
+              width: MediaQuery.of(context).size.width * .85,
+              height: MediaQuery.of(context).size.height * .65,
               child: ListView.separated(
                 itemCount: orders.length,
-                itemBuilder: (context, index) => SizedBox(
-                  height: 80,
-                  width: 380,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 3),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Text(orders[index].name),
-                            const SizedBox(width: 10),
-                            Text('${orders[index].stocks?.length ?? 0} Stocks'),
-                          ],
+                itemBuilder: (context, index) {
+                  var currentOrder = orders[index];
+                  return SizedBox(
+                    height: 100,
+                    width: double.infinity,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 3,
+                          color: GlobalConstants.mainBlue.withAlpha(150),
                         ),
-                        Row(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const SizedBox(width: 5),
-                            TextButton.icon(
-                              onPressed: () async {
-                                fetchStocks();
+                            Row(
+                              children: [
+                                const SizedBox(width: 5),
+                                Text(orders[index].name),
+                                const SizedBox(width: 10),
+                                Text(
+                                    '${currentOrder.stocks?.length ?? 0} Stocks'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const SizedBox(width: 5),
+                                TextButton.icon(
+                                  onPressed: () async {
+                                    fetchStocks();
 
-                                print('items to send: $stocks');
-                                List<String> _selectedItems = [];
-                                final List<String>? results = await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return MultiSelect(items: stocks);
+                                    print('items to send: $stocks');
+                                    List<String> _selectedItems = [];
+                                    final List<String>? results =
+                                        await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return MultiSelect(items: stocks);
+                                      },
+                                    );
+
+                                    // Update UI
+                                    if (results != null) {
+                                      setState(() {
+                                        _selectedItems = results;
+                                      });
+                                    }
+
+                                    for (var item in _selectedItems) {
+                                      /*
+                                    var id = double.parse(item
+                                        .split(':')
+                                        .last
+                                        .split(',')
+                                        .first
+                                        .trimLeft());
+                                        */
+                                      var id = int.parse(item.split(':').first);
+
+                                      var found = stocks.firstWhere(
+                                          (element) => element.id == id);
+                                      orderStocks.add(found);
+                                      addStocksToOrder(
+                                        orders[index],
+                                        orderStocks,
+                                      );
+                                      setState(() {});
+                                    }
                                   },
-                                );
-
-                                // Update UI
-                                if (results != null) {
-                                  setState(() {
-                                    _selectedItems = results;
-                                  });
-                                }
-
-                                for (var item in _selectedItems) {
-                                  var id = double.parse(item
-                                      .split(':')
-                                      .last
-                                      .split(',')
-                                      .first
-                                      .trimLeft());
-
-                                  var found = stocks.firstWhere(
-                                      (element) => element.price == id);
-                                  orderStocks.add(found);
-                                  addStocksToOrder(
-                                    orders[index],
-                                    orderStocks,
-                                  );
-                                }
-                              },
-                              icon: const Icon(Icons.add),
-                              label: const Text('Add Stock'),
-                            ),
-                            const SizedBox(width: 5),
-                            TextButton.icon(
-                              onPressed: () {},
-                              icon: const Icon(Icons.add),
-                              label: const Text('Send Order'),
+                                  icon: const Icon(Icons.add),
+                                  label: const Text('Add Stock'),
+                                ),
+                                const SizedBox(width: 5),
+                                TextButton.icon(
+                                  onPressed: () {
+                                    sendOrder(currentOrder);
+                                  },
+                                  icon: const Icon(Icons.add),
+                                  label: const Text('Send Order'),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 15),
               ),
@@ -284,7 +321,7 @@ class _MultiSelectState extends State<MultiSelect> {
   Widget build(BuildContext context) {
     List<String> itemsString = widget.items
         .map(
-          (e) => '${e.orderId}:${e.price},${e.arrivedDate}',
+          (e) => '${e.id}:${e.price},${e.arrivedDate}',
         )
         .toList();
     print('items stock: ${widget.items}');

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:logixx/models/order.dart';
 import 'package:logixx/models/stock.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -523,6 +524,7 @@ class TenantApi {
     return statusCode;
   }
 
+  // for admins
   Future<List<Warehouse>> fetchWarehouses(Company company, Admin admin) async {
     var dio = Dio();
     int statusCode = 200;
@@ -532,6 +534,46 @@ class TenantApi {
     final url = '${AppUrls.baseUrl}/${company.companyId}/warehouses';
 
     final token = admin.token ?? '';
+
+    try {
+      final response = await dio.get(
+        url,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        //print(response.data);
+        print('fetched successfully');
+        final jsonData = response.data as List<dynamic>;
+
+        if (jsonData.isNotEmpty) {
+          warehouses = jsonData.map((item) => Warehouse.fromMap(item)).toList();
+        }
+      }
+      statusCode = response.statusCode!;
+    } catch (e) {
+      print(e.toString());
+    }
+
+    return warehouses;
+  }
+
+  // for staffs
+  Future<List<Warehouse>> fetchTheWarehouses(
+      Company company, Staff staff) async {
+    var dio = Dio();
+    int statusCode = 200;
+
+    List<Warehouse> warehouses = [];
+
+    final url = '${AppUrls.baseUrl}/${company.companyId}/warehouse';
+
+    final token = staff.token ?? '';
 
     try {
       final response = await dio.get(
@@ -692,5 +734,25 @@ class TenantApi {
       print(e);
     }
     return false;
+  }
+
+  void sendOrder(Company company, Staff staff, Order order) async {
+    var dio = Dio();
+    final url = '${AppUrls.baseUrl}/${company.companyId!}/createOrder';
+
+    try {
+      Response response = await dio.post(
+        url,
+        data: {
+          'staff_email': staff.email,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print(response.data);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }

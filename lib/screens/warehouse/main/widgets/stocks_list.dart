@@ -130,84 +130,7 @@ class _StocksListPageState extends State<StocksListPage> {
             onPressed: () {
               showModalBottomSheet(
                 context: context,
-                builder: (context) => SizedBox(
-                  width: double.infinity,
-                  height: MediaQuery.of(context).size.height * .67,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 30,
-                    ),
-                    child: Column(
-                      children: [
-                        Form(
-                          key: _formKey,
-                          child: TextFormField(
-                            controller: batchameController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              label: const Text('give name to batch'),
-                            ),
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  value.trim().length <= 1 ||
-                                  value.trim().length >= 50) {
-                                return 'please enter valid name';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              batchName = value!;
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        TextButton(
-                          onPressed: onCreateBatch,
-                          child: const Text('Submit'),
-                        ),
-                        /*
-                        Container(
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height * .45,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 3),
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Column(children: [
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(25),
-                                    topRight: Radius.circular(25),
-                                  ),
-                                  color: GlobalConstants.mainBlue
-                                      .withOpacity(0.35),
-                                ),
-                                child: Text(
-                                  'Choose A few stocks to start',
-                                  style: GoogleFonts.roboto(
-                                    textStyle: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ]),
-                        ),
-                        */
-                      ],
-                    ),
-                  ),
-                ),
+                builder: (context) => createNewOrderWidget(context),
               );
             },
             icon: const Icon(Icons.add),
@@ -323,5 +246,86 @@ class _StocksListPageState extends State<StocksListPage> {
         ),
       ),
     );
+  }
+
+  SizedBox createNewOrderWidget(BuildContext context) {
+    return SizedBox(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * .67,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 30,
+                  ),
+                  child: Column(
+                    children: [
+                      Form(
+                        key: _formKey,
+                        child: TextFormField(
+                          controller: batchameController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            label: const Text('give name to batch'),
+                          ),
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.trim().length <= 1 ||
+                                value.trim().length >= 50) {
+                              return 'please enter valid name';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            batchName = value!;
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextButton(
+                        onPressed: onCreateBatch,
+                        child: const Text('Submit'),
+                      ),
+                      /*
+                      Container(
+                        width: double.infinity,
+                        height: MediaQuery.of(context).size.height * .45,
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 3),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Column(children: [
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(25),
+                                  topRight: Radius.circular(25),
+                                ),
+                                color: GlobalConstants.mainBlue
+                                    .withOpacity(0.35),
+                              ),
+                              child: Text(
+                                'Choose A few stocks to start',
+                                style: GoogleFonts.roboto(
+                                  textStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ]),
+                      ),
+                      */
+                    ],
+                  ),
+                ),
+              );
   }
 }

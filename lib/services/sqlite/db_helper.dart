@@ -48,29 +48,18 @@ class DatabaseHelper {
           tableTimeTrack +
           tableAllowedWorkType);*/
     });
-*/
-    // Open/create the database at a given path
 
+
+*/
+
+    //await deleteDatabase(path);
+    _database = await openDatabase(path, version: 1, onCreate: _createDatabase);
     if (_database != null) {
       //deleteDatabaseIfExists(_database!);
-      return _database!;
-    }
-
-    return await openDatabase(path, version: 1, onCreate: _createDatabase);
-  }
-
-  Future<void> _createDatabase(Database db, int version) async {
-    // Create your table
-    await db.execute('''
-      CREATE TABLE IF NOT EXISTS Order (
-        id INTEGER PRIMARY KEY,
-        staff_email TEXT,
-        name TEXT
-      );
-    ''');
-
-    await db.execute('''
-      CREATE TABLE Stock(
+      print('db not null');
+/*
+      await _database!.execute('''
+      CREATE TABLE IF NOT EXISTS Stock(
         id INTEGER PRIMARY KEY,
         order_id INTEGER,
         price REAL,
@@ -78,9 +67,49 @@ class DatabaseHelper {
         status TEXT,
         arrived_date TEXT,
 
-        FOREIGN KEY(order_id) REFERENCES Order(id)
+        FOREIGN KEY(order_id) REFERENCES "Order"(id)
       );
     ''');
+    
+      await _database!.execute('ALTER TABLE "Order" RENAME TO orders;');
+      await _database!.execute('ALTER TABLE Stock RENAME TO stocks;');
+      
+      await _database!
+          .execute('ALTER TABLE stocks ADD COLUMN arrived_at TEXT;');
+      */
+
+      // Open/create the database at a given path
+
+      return _database!;
+    }
+
+    //return _database!;
+    return await openDatabase(path, version: 1, onCreate: _createDatabase);
+  }
+
+  Future<void> _createDatabase(Database db, int version) async {
+    // Create your table
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS orders (
+        id INTEGER PRIMARY KEY,
+        staff_email TEXT,
+        name TEXT
+      );
+    ''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS stocks(
+        id INTEGER PRIMARY KEY,
+        order_id INTEGER,
+        price REAL,
+        quantity INTEGER,
+        status TEXT,
+        arrived_at TEXT,
+
+        FOREIGN KEY(order_id) REFERENCES orders(id)
+      );
+    ''');
+    print('this executed');
   }
 
   Future<void> insertOrder(Order order) async {
@@ -90,12 +119,12 @@ class DatabaseHelper {
     // order table is called TheBatch, cause old table refused to
     // delete for whatever fucking reason
     // so yea we keepin the name
-    await db!.insert('Order', order.toMap());
+    await db!.insert('orders', order.toMap());
   }
 
   Future<List<Order>> retrieveOrders() async {
     final db = _database;
-    List<Map<String, dynamic>> orderMaps = await db!.query('Order');
+    List<Map<String, dynamic>> orderMaps = await db!.query('orders');
 
     return List.generate(
       orderMaps.length,
@@ -109,29 +138,39 @@ class DatabaseHelper {
     final db = _database;
 
     // Insert the order
-    int orderId = await db!.insert('Order', order.toMap());
+    //int orderId = await db!.insert('orders', order.toMap());
+    List<Map<String, dynamic>> orderMap = await db!
+        .query('orders', where: 'id = ?', whereArgs: [order.id], limit: 1);
 
-    // Insert each Stock with the corresponding orderId
-    for (Stock stock in stocks) {
-      stock.orderId = orderId;
-      await db.insert('Stock', stock.toMap());
+    var orderFound = Order.fromMap(orderMap[0]);
+
+    try {
+      await db.transaction((txn) async {
+        final batch = txn.batch();
+        for (Stock stock in stocks) {
+          stock.orderId = orderFound.id;
+          batch.insert('stocks', stock.toMap());
+        }
+        await batch.commit();
+      });
+    } finally {
+      // Close the database after operations
+      //await db.close();
     }
   }
 
   Future<List<Stock>> retrieveStocks(Order order) async {
     final db = _database;
 
-    List<Stock> stocks = [];
-
     List<Map<String, dynamic>> orderMap = await db!
-        .query('Order', where: 'name = ?', whereArgs: [order.name], limit: 1);
+        .query('orders', where: 'id = ?', whereArgs: [order.id], limit: 1);
 
-    var orderId = Order.fromMap(orderMap[0]);
+    var orderFound = Order.fromMap(orderMap[0]);
 
     List<Map<String, dynamic>> stockMaps = await db.query(
-      'Stock',
+      'stocks',
       where: 'order_id = ?',
-      whereArgs: [orderId],
+      whereArgs: [orderFound.id],
     );
 
     // Convert List<Map<String, dynamic>> to List<Stock>

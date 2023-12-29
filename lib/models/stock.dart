@@ -11,10 +11,12 @@ class Stock {
     required this.arrivedDate,
     required this.status,
     this.orderId,
+    this.id,
 
     //required this.shipType,
   });
 
+  int? id;
   final double price;
   final int quantity;
   int? orderId;
@@ -30,6 +32,7 @@ class Stock {
     return Stock(
       //companyId: map['company_id'] as int,
       //warehouseId: map['warehouse_id'] as int,
+      id: map['id'],
       quantity: map['quantity'] as int,
       price: priceD,
       arrivedDate: map['arrived_at'] as String,
