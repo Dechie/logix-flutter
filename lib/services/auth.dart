@@ -88,7 +88,9 @@ class Auth {
       if (response.statusCode == 201) {
         print('request successful');
         final token = response.data['token'];
+        final id = response.data['id'];
         final authed = AuthedUser(
+          id: id!,
           name: staff.name,
           role: 'staff',
           token: token,
@@ -140,8 +142,9 @@ class Auth {
       if (response.statusCode == 201) {
         print('response successful.');
         final token = response.data['token'];
-
+        final id = response.data['id'];
         final authed = AuthedUser(
+          id: id!,
           name: driver.name,
           role: 'driver',
           token: token,

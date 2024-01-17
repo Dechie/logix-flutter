@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logixx/screens/auth/auth_page.dart';
+import 'package:logixx/screens/auth/register_page.dart';
 import 'package:logixx/screens/warehouse/main/warehouse_main.dart';
 import 'package:logixx/services/shared_prefs.dart';
 
@@ -257,6 +259,16 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
           style: GoogleFonts.roboto(),
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => AuthPage(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.arrow_back_ios),
+          ),
           IconButton(
             onPressed: () {
               Navigator.of(context).push(
