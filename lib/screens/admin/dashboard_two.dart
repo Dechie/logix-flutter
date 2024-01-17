@@ -147,7 +147,7 @@ class _DashBoardState extends State<DashBoard> {
                 children: [
                   Text(
                     admin.name,
-                    style: GoogleFonts.montserrat(
+                    style: GoogleFonts.roboto(
                       textStyle: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,

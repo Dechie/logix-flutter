@@ -11,8 +11,8 @@ class Auth {
   Future<int> registerAdmin(Admin admin) async {
     var dio = Dio();
     var response = Response(requestOptions: RequestOptions());
-    dio.options.followRedirects = true;
-    dio.options.maxRedirects = 5;
+    // dio.options.followRedirects = true;
+    // dio.options.maxRedirects = 5;
     const url = '${AppUrls.baseUrl}/admin/register';
 
     try {
@@ -21,7 +21,7 @@ class Auth {
         url,
         data: {
           'name': admin.name,
-          'email': admin.email,
+          'phone': admin.phone,
           'password': admin.password,
         },
         options: Options(headers: {
@@ -32,14 +32,16 @@ class Auth {
       if (response.statusCode == 201) {
         print('request successful');
         final token = response.data['token'];
+        final id = response.data['id'];
 
         final preffs = SharedPrefs();
 
         final authed = AuthedUser(
+          id: id,
           name: admin.name,
           role: 'admin',
           token: token,
-          email: admin.email,
+          phone: admin.phone,
         );
 
         await preffs.saveUserToPrefs(authed);
@@ -75,7 +77,7 @@ class Auth {
         url,
         data: {
           'name': staff.name,
-          'email': staff.email,
+          'phone': staff.phone,
           'password': staff.password,
         },
         options: Options(headers: {
@@ -90,7 +92,7 @@ class Auth {
           name: staff.name,
           role: 'staff',
           token: token,
-          email: staff.email,
+          phone: staff.phone,
         );
 
         await preffs.saveUserToPrefs(authed);
@@ -127,7 +129,7 @@ class Auth {
         url,
         data: {
           'name': driver.name,
-          'email': driver.email,
+          'phone': driver.phone,
           'password': driver.password,
         },
         options: Options(headers: {
@@ -143,7 +145,7 @@ class Auth {
           name: driver.name,
           role: 'driver',
           token: token,
-          email: driver.email,
+          phone: driver.phone,
         );
 
         await preffs.saveUserToPrefs(authed);

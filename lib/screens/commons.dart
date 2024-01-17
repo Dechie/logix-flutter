@@ -37,7 +37,7 @@ class CommonMethos {
             },
             child: Text(
               user.name.split(' ').toList().first,
-              style: GoogleFonts.montserrat(
+              style: GoogleFonts.roboto(
                 textStyle: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
@@ -107,7 +107,7 @@ class CommonMethos {
             ),
             label: Text(
               'New Account',
-              style: GoogleFonts.montserrat(
+              style: GoogleFonts.roboto(
                 textStyle: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,

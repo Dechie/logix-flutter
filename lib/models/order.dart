@@ -3,20 +3,20 @@ import 'package:logixx/models/stock.dart';
 class Order {
   Order({
     required this.name,
-    required this.staffEmail,
+    required this.staffPhone,
     this.stocks,
     this.id,
   });
 
   final String name;
-  final String staffEmail;
+  final String staffPhone;
   List<Stock>? stocks = [];
   int? id;
 
   factory Order.fromMap(Map<String, dynamic> map) {
     return Order(
       id: map['id'],
-      staffEmail: map['staff_email'],
+      staffPhone: map['staff_phone'],
       name: map['name'],
     );
   }
@@ -24,7 +24,7 @@ class Order {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'staff_email': staffEmail,
+      'staff_phone': staffPhone,
     };
   }
 }

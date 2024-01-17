@@ -38,7 +38,7 @@ class _StocksListPageState extends State<StocksListPage> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      var batch = Order(name: batchName, staffEmail: widget.staff.email);
+      var batch = Order(name: batchName, staffPhone: widget.staff.phone);
 
       //var dbHelper = DatabaseHelper();
       DatabaseHelper dbHelper = DatabaseHelper.instance;

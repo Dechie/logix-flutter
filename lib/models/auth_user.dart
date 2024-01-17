@@ -1,6 +1,7 @@
 class AuthedUser {
+  int? id;
   final String name;
-  final String email;
+  final String phone;
   final String role;
   final String token;
   String? password;
@@ -9,14 +10,15 @@ class AuthedUser {
     required this.name,
     required this.role,
     required this.token,
-    required this.email,
+    required this.phone,
     this.password,
+    this.id,
   });
 
   factory AuthedUser.fromMap(Map<String, dynamic> json) {
     return AuthedUser(
       name: json['name'],
-      email: json['email'],
+      phone: json['phone'],
       role: json['role'],
       token: json['token'],
     );
@@ -25,7 +27,7 @@ class AuthedUser {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'email': email,
+      'phone': phone,
       'role': role,
       'token': token,
     };

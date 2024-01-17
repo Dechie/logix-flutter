@@ -2,13 +2,13 @@ import 'package:logixx/models/auth_user.dart';
 
 class Admin {
   final String name;
-  final String email;
+  final String phone;
   String? password;
   String? token;
 
   Admin({
     required this.name,
-    required this.email,
+    required this.phone,
     this.password,
     this.token,
   });
@@ -16,14 +16,14 @@ class Admin {
   factory Admin.fromMap(Map<String, dynamic> json) {
     return Admin(
       name: json['name'],
-      email: json['email'],
+      phone: json['phone'],
     );
   }
 
   factory Admin.fromAuthedUser(AuthedUser user) {
     return Admin(
       name: user.name,
-      email: user.email,
+      phone: user.phone,
       token: user.token,
     );
   }
@@ -31,7 +31,7 @@ class Admin {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'email': email,
+      'phone': phone,
     };
   }
 }

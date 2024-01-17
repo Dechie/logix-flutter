@@ -31,7 +31,6 @@ class _RegisterScreenState extends State<RegisterScreen>
     with TickerProviderStateMixin {
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
-  final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final companyCodeController = TextEditingController();
 
@@ -46,7 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen>
   var _enteredName = '';
   var _enteredPassword = '';
   //var _enteredPhone = '';
-  var _enteredEmail = '';
+  var _enteredPhone = '';
   //var _enteredCompanyCode = '';
 
   void loginForm() async {
@@ -60,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           print('user is admin');
           final admin = Admin(
             name: _enteredName,
-            email: _enteredEmail,
+            phone: _enteredPhone,
             password: _enteredPassword,
           );
           final auth = Auth();
@@ -89,7 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           print('user is staff');
           final staff = Staff(
               name: _enteredName,
-              email: _enteredEmail,
+              phone: _enteredPhone,
               password: _enteredPassword);
           final auth = Auth();
           final preffs = SharedPrefs();
@@ -117,7 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           print('user is driver');
           final driver = Driver(
             name: _enteredName,
-            email: _enteredEmail,
+            phone: _enteredPhone,
             password: _enteredPassword,
           );
           final auth = Auth();
@@ -271,8 +270,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                                     ),
                                     const SizedBox(height: 10),
                                     TextFormField(
-                                      controller: emailController,
-                                      keyboardType: TextInputType.emailAddress,
+                                      controller: phoneController,
+                                      keyboardType: TextInputType.phone,
                                       validator: (value) {
                                         if (value == null ||
                                             value.isEmpty ||
@@ -283,11 +282,11 @@ class _RegisterScreenState extends State<RegisterScreen>
                                         return null;
                                       },
                                       onSaved: (value) {
-                                        _enteredEmail = value!;
+                                        _enteredPhone = value!;
                                       },
                                       decoration: InputDecoration(
                                         isDense: true,
-                                        hintText: 'Your Email Here',
+                                        hintText: 'Your Phone Here',
                                         suffixIcon: const Icon(Icons.phone),
                                         border: OutlineInputBorder(
                                           borderRadius:
@@ -335,7 +334,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                           const SizedBox(height: 20),
                                           Text(
                                             'choose your role:',
-                                            style: GoogleFonts.montserrat(
+                                            style: GoogleFonts.roboto(
                                               textStyle: const TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -348,7 +347,6 @@ class _RegisterScreenState extends State<RegisterScreen>
                                                   _userRole = UserRole.admin;
                                                   nameController.clear();
                                                   phoneController.clear();
-                                                  emailController.clear();
                                                   setState(() {});
                                                 },
                                                 child: Container(
@@ -374,8 +372,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                                   ),
                                                   child: Text(
                                                     'Admin',
-                                                    style:
-                                                        GoogleFonts.montserrat(
+                                                    style: GoogleFonts.roboto(
                                                       textStyle: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -419,8 +416,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                                   ),
                                                   child: Text(
                                                     'Staff',
-                                                    style:
-                                                        GoogleFonts.montserrat(
+                                                    style: GoogleFonts.roboto(
                                                       textStyle: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -464,8 +460,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                                   ),
                                                   child: Text(
                                                     'Driver',
-                                                    style:
-                                                        GoogleFonts.montserrat(
+                                                    style: GoogleFonts.roboto(
                                                       textStyle: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,

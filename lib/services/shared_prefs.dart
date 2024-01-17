@@ -12,12 +12,12 @@ class SharedPrefs {
   Future<void> saveStaffAppliedStatus(Staff staff, Company company) async {
     final prefs = await SharedPreferences.getInstance();
 
-    final email = staff.email;
+    final phone = staff.phone;
     final companyId = company.companyId;
 
     List<String>? appliedStaffs = prefs.getStringList('appliedStaffs') ?? [];
 
-    appliedStaffs.add('$email:$companyId');
+    appliedStaffs.add('$phone:$companyId');
     await prefs.setStringList('appliedStaffs', appliedStaffs);
   }
 
@@ -39,13 +39,13 @@ class SharedPrefs {
       Staff staff, Warehouse warehouse) async {
     final prefs = await SharedPreferences.getInstance();
 
-    final email = staff.email;
+    final phone = staff.phone;
     final warehouseName = warehouse.name;
 
     List<String>? assignedStaffs =
         prefs.getStringList('warehouseAssignedStaffs') ?? [];
 
-    assignedStaffs.add('$email:$warehouseName');
+    assignedStaffs.add('$phone:$warehouseName');
     await prefs.setStringList('warehouseAssignedStaffs', assignedStaffs);
   }
 
@@ -67,12 +67,12 @@ class SharedPrefs {
   Future<void> saveDriverAppliedStatus(Driver driver, Company company) async {
     final prefs = await SharedPreferences.getInstance();
 
-    final email = driver.email;
+    final phone = driver.phone;
     final companyId = company.companyId;
 
     List<String>? appliedDrivers = prefs.getStringList('appliedDrivers') ?? [];
 
-    appliedDrivers.add('$email:$companyId');
+    appliedDrivers.add('$phone:$companyId');
     await prefs.setStringList('appliedStaffs', appliedDrivers);
   }
 
@@ -117,12 +117,16 @@ class SharedPrefs {
 
     if (jsonStringList != null) {
       for (var jsonString in jsonStringList) {
+        print('authed users:');
         print(jsonString);
         Map<String, dynamic> jsonMap = json.decode(jsonString);
         users.add(AuthedUser.fromMap(jsonMap));
       }
       //return AuthedUser.fromMap(jsonMap);
     }
+
+    // uncomment this when you want to reset user data
+    //await prefs.setStringList('authedUsers', []);
     return users;
   }
 
@@ -142,7 +146,7 @@ class SharedPrefs {
 
   Future<void> updateUsersList(AuthedUser user) async {
     List<AuthedUser> oldList = await getAuthedFromPrefs();
-    AuthedUser userr = AuthedUser(name: '', role: '', token: '', email: '');
+    AuthedUser userr = AuthedUser(name: '', role: '', token: '', phone: '');
     userr = oldList
         .firstWhere((usr) => user.name == usr.name && user.token == usr.token);
 

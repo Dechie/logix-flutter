@@ -64,7 +64,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
 
   void createNewCompany() {
     showModalBottomSheet(
-      isScrollControlled: true,
+        isScrollControlled: true,
         context: context,
         builder: (ctx) {
           return Padding(
@@ -131,7 +131,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
         backgroundColor: Colors.white,
         title: Text(
           'Logix Admin Page',
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.roboto(
             textStyle: const TextStyle(
               color: GlobalConstants.mainBlue,
               fontSize: 18,
@@ -171,7 +171,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
                   children: [
                     Text(
                       admin.name,
-                      style: GoogleFonts.montserrat(
+                      style: GoogleFonts.roboto(
                         textStyle: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
@@ -182,7 +182,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
                     Row(
                       children: [
                         Text(
-                          admin.email,
+                          admin.phone,
                           style: GoogleFonts.roboto(
                             textStyle: const TextStyle(
                               fontWeight: FontWeight.w600,
@@ -211,7 +211,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
               ListTile(
                 title: Text(
                   'MyCompany',
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,
@@ -229,7 +229,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
               ListTile(
                 title: Text(
                   'Employees',
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,
@@ -245,7 +245,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
               ListTile(
                 title: Text(
                   'New Route',
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,
@@ -258,7 +258,7 @@ class _AdminMainPageState extends State<AdminMainPage> {
               ListTile(
                 title: Text(
                   'Statistics',
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,

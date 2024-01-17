@@ -2,20 +2,20 @@ import 'auth_user.dart';
 
 class Staff {
   final String name;
-  final String email;
+  final String phone;
   String? password;
   String? token;
 
   Staff({
     required this.name,
-    required this.email,
+    required this.phone,
     this.password,
     this.token,
   });
   factory Staff.fromAuthedUser(AuthedUser user) {
     return Staff(
       name: user.name,
-      email: user.email,
+      phone: user.phone,
       token: user.token,
     );
   }
@@ -23,14 +23,14 @@ class Staff {
   factory Staff.fromMap(Map<String, dynamic> map) {
     return Staff(
       name: map['name'] as String,
-      email: map['email'] as String,
+      phone: map['phone'] as String,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'email': email,
+      'phone': phone,
     };
   }
 }

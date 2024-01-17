@@ -31,8 +31,8 @@ class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
-  final emailController = TextEditingController();
   final phoneController = TextEditingController();
+  //final emailController = TextEditingController();
   final companyCodeController = TextEditingController();
 
   final _formkey = GlobalKey<FormState>();
@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen>
   var _enteredName = '';
   var _enteredPassword = '';
   //var _enteredPhone = '';
-  var _enteredEmail = '';
+  var _enteredPhone = '';
   //var _enteredCompanyCode = '';
 
   void loginForm() async {
@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen>
         {
           final admin = Admin(
             name: _enteredName,
-            email: _enteredEmail,
+            phone: _enteredPhone,
             password: _enteredPassword,
           );
 
@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen>
         {
           final staff = Staff(
               name: _enteredName,
-              email: _enteredEmail,
+              phone: _enteredPhone,
               password: _enteredPassword);
           navigateDynamic(model: staff, userRole: "staff");
         }
@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen>
         {
           final driver = Driver(
             name: _enteredName,
-            email: _enteredEmail,
+            phone: _enteredPhone,
             password: _enteredPassword,
           );
 
@@ -227,12 +227,8 @@ class _LoginScreenState extends State<LoginScreen>
                                     ),
                                     const SizedBox(height: 10),
                                     TextFormField(
-                                      controller: _userIsAdmin
-                                          ? emailController
-                                          : phoneController,
-                                      keyboardType: _userIsAdmin
-                                          ? TextInputType.emailAddress
-                                          : TextInputType.phone,
+                                      controller: phoneController,
+                                      keyboardType: TextInputType.phone,
                                       validator: (value) {
                                         if (value == null ||
                                             value.isEmpty ||
@@ -244,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen>
                                       },
                                       onSaved: (value) {
                                         if (_userIsAdmin) {
-                                          _enteredEmail = value!;
+                                          _enteredPhone = value!;
                                         } //else {
                                         //_enteredPhone = value!;
                                         // }
@@ -252,7 +248,7 @@ class _LoginScreenState extends State<LoginScreen>
                                       decoration: InputDecoration(
                                         isDense: true,
                                         hintText: _userIsAdmin
-                                            ? 'Your Email Here'
+                                            ? 'Your phone Here'
                                             : 'Your Phone Number Here',
                                         suffixIcon: const Icon(Icons.phone),
                                         border: OutlineInputBorder(
@@ -340,7 +336,7 @@ class _LoginScreenState extends State<LoginScreen>
                                           const SizedBox(height: 20),
                                           Text(
                                             'choose your role:',
-                                            style: GoogleFonts.montserrat(
+                                            style: GoogleFonts.roboto(
                                               textStyle: const TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -354,7 +350,7 @@ class _LoginScreenState extends State<LoginScreen>
                                                     _userRole = UserRole.admin;
                                                     nameController.clear();
                                                     phoneController.clear();
-                                                    emailController.clear();
+                                                    phoneController.clear();
                                                   });
                                                 },
                                                 child: Container(
@@ -380,8 +376,7 @@ class _LoginScreenState extends State<LoginScreen>
                                                   ),
                                                   child: Text(
                                                     'Admin',
-                                                    style:
-                                                        GoogleFonts.montserrat(
+                                                    style: GoogleFonts.roboto(
                                                       textStyle: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -428,8 +423,7 @@ class _LoginScreenState extends State<LoginScreen>
                                                   ),
                                                   child: Text(
                                                     'Staff',
-                                                    style:
-                                                        GoogleFonts.montserrat(
+                                                    style: GoogleFonts.roboto(
                                                       textStyle: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -475,8 +469,7 @@ class _LoginScreenState extends State<LoginScreen>
                                                   ),
                                                   child: Text(
                                                     'Driver',
-                                                    style:
-                                                        GoogleFonts.montserrat(
+                                                    style: GoogleFonts.roboto(
                                                       textStyle: TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,

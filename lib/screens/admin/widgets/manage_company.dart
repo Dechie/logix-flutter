@@ -18,7 +18,7 @@ class _ManageCompanyState extends State<ManageCompany> {
             color: Theme.of(context).primaryColor.withAlpha(200),
             child: Text(
               'My Company Name',
-              style: GoogleFonts.montserrat(
+              style: GoogleFonts.roboto(
                 textStyle: TextStyle(fontSize: 18),
               ),
             ),

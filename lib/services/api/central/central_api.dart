@@ -13,8 +13,8 @@ class Api {
     const url = '${AppUrls.baseUrl}/create';
     print(url);
     String? token = admin.token ?? '';
-    print(token);
-
+    print(company.toMap());
+    print('token: $token');
     final userData = company.toMap();
 
     try {
@@ -62,12 +62,13 @@ class Api {
     return searchCompany;
   }
 
-  Future<List<Company>> fetchCompanies(String token) async {
+  Future<(List<Company>, int)> fetchCompanies(String token) async {
     var dio = Dio();
 
     //final prefs = await SharedPreferences.getInstance();
     //final token = prefs.getString('token');
     const url = '${AppUrls.baseUrl}/home';
+    int statusCode = 0;
 
     List<Company> companies = [];
 
@@ -81,6 +82,7 @@ class Api {
           },
         ),
       );
+      statusCode = response.statusCode ?? -10;
 
       if (response.statusCode == 200) {
         final jsonData = response.data as List<dynamic>;
@@ -88,12 +90,16 @@ class Api {
         if (jsonData.isNotEmpty) {
           companies = jsonData.map((item) => Company.fromMap(item)).toList();
         }
+      } else {
+        print(response.statusCode);
+        print(response.statusMessage);
       }
     } catch (e) {
       print(e.toString());
     }
-    //print(companies);
-    return companies;
+    print('companies: ');
+    print(companies);
+    return (companies, statusCode);
   }
 
   Future<(int, List<String>)> fetchProjects(int selectTenant) async {

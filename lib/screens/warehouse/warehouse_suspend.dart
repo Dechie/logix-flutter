@@ -37,12 +37,6 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
   int companyId = 0;
   final _formKey = GlobalKey<FormState>();
 
-  void sendFormData() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-    }
-  }
-
   Future<bool> applyToCompany(Company company, Staff staff) async {
     print('this one executed');
 
@@ -83,24 +77,24 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
     List<String> staffList = await shPrefs.getAppliedStaffs();
     print(staffList.isNotEmpty);
 
-    String emailInQuestion = widget.staff.email;
+    String phoneInQuestion = widget.staff.phone;
 
-    List<Map<String, String>> emails = staffList.map((stf) {
+    List<Map<String, String>> phones = staffList.map((stf) {
       List<String> splitted = stf.split(':');
       return {
-        'email': splitted.first,
+        'phone': splitted.first,
         'cId': splitted.last,
       };
     }).toList();
 
-    List<String> emls = staffList.map((stf) => stf.split(':').first).toList();
+    List<String> phns = staffList.map((stf) => stf.split(':').first).toList();
 
-    //isAppliedToCompany = emails.any((map) => map['email'] == emailInQuestion);
-    isAppliedToCompany = emls.contains(emailInQuestion);
+    //isAppliedToCompany = phones.any((map) => map['phone'] == phoneInQuestion);
+    isAppliedToCompany = phns.contains(phoneInQuestion);
 
     if (isAppliedToCompany) {
       var matchVal =
-          emails.firstWhere((entity) => entity['email'] == emailInQuestion);
+          phones.firstWhere((entity) => entity['phone'] == phoneInQuestion);
       int? compId = int.parse(matchVal['cId']!);
       appliedCompany = await getCompany(compId);
       //companies.firstWhere((comp) => comp.companyId! == companyId);
@@ -114,24 +108,24 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
     List<String> staffList =
         await shPrefs.getWarehouseAssignedStaffs(widget.staff, wh);
 
-    String emailInQuestion = widget.staff.email;
+    String phoneInQuestion = widget.staff.phone;
 
-    List<Map<String, String>> emails = staffList.map((stf) {
+    List<Map<String, String>> phones = staffList.map((stf) {
       List<String> splitted = stf.split(':');
       return {
-        'email': splitted.first,
+        'phone': splitted.first,
         'wId': splitted.last,
       };
     }).toList();
 
-    List<String> emls = staffList.map((stf) => stf.split(':').first).toList();
+    List<String> phns = staffList.map((stf) => stf.split(':').first).toList();
 
-    //isAppliedToCompany = emails.any((map) => map['email'] == emailInQuestion);
-    //isAssignedWarehouse = emls.contains(emailInQuestion);
+    //isAppliedToCompany = phones.any((map) => map['phone'] == phoneInQuestion);
+    //isAssignedWarehouse = phns.contains(phoneInQuestion);
 
     if (isAssignedWarehouse) {
       var matchVal =
-          emails.firstWhere((entity) => entity['email'] == emailInQuestion);
+          phones.firstWhere((entity) => entity['phone'] == phoneInQuestion);
       /*
       int? wareId = int.parse(matchVal['cId']!);
       assignedWarehouse = await getWarehouse(wareId);
@@ -156,18 +150,18 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
     var shPrefs = SharedPrefs();
     List<String> staffList = await shPrefs.getAppliedStaffs();
 
-    String emailInQuestion = widget.staff.email;
+    String phoneInQuestion = widget.staff.phone;
 
-    List<Map<String, String>> emails = staffList.map((stf) {
+    List<Map<String, String>> phones = staffList.map((stf) {
       List<String> splitted = stf.split(':');
       return {
-        'email': splitted.first,
+        'phone': splitted.first,
         'company_id': splitted.last,
       };
     }).toList();
 
     Map<String, String> ourMap =
-        emails.firstWhere((stf) => stf['email'] == emailInQuestion);
+        phones.firstWhere((stf) => stf['phone'] == phoneInQuestion);
 
     final staff = widget.staff;
     int companyId = int.parse(ourMap['company_id']!);
@@ -218,7 +212,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                     child: SizedBox(
                       child: Text(
                         'Apply',
-                        style: GoogleFonts.montserrat(
+                        style: GoogleFonts.roboto(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
@@ -260,7 +254,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
         backgroundColor: Colors.white,
         title: Text(
           'Choose Company',
-          style: GoogleFonts.montserrat(),
+          style: GoogleFonts.roboto(),
         ),
         actions: [
           IconButton(
@@ -378,10 +372,20 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * .7,
                       height: 70,
-                      child: const DecoratedBox(
-                        decoration:
-                            BoxDecoration(color: GlobalConstants.mainBlue),
-                        child: Text('Apply'),
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                            color: GlobalConstants.mainBlue),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Apply',
+                            style: GoogleFonts.roboto(
+                              textStyle: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),

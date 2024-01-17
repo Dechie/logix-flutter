@@ -50,7 +50,7 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
         backgroundColor: Colors.white,
         title: Text(
           'Logix Staff Page',
-          style: GoogleFonts.montserrat(),
+          style: GoogleFonts.roboto(),
         ),
         actions: [
           IconButton(
@@ -81,7 +81,7 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
                   children: [
                     Text(
                       staff.name,
-                      style: GoogleFonts.montserrat(
+                      style: GoogleFonts.roboto(
                         textStyle: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
@@ -92,7 +92,7 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
                     Row(
                       children: [
                         Text(
-                          staff.email,
+                          staff.phone,
                           style: GoogleFonts.roboto(
                             textStyle: const TextStyle(
                               fontWeight: FontWeight.w600,
@@ -121,7 +121,7 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
               ListTile(
                 title: Text(
                   'Stocks',
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,
@@ -142,7 +142,7 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
               ListTile(
                 title: Text(
                   'Main Page',
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,
@@ -159,7 +159,7 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
               ListTile(
                 title: Text(
                   'Orders',
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,
@@ -180,7 +180,7 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
               ListTile(
                 title: Text(
                   'MyCompany',
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,
@@ -193,7 +193,7 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
               ListTile(
                 title: Text(
                   'MyCompany',
-                  style: GoogleFonts.montserrat(
+                  style: GoogleFonts.roboto(
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,

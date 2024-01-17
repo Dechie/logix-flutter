@@ -35,7 +35,6 @@ class _DriverSuspendPageState extends State<DriverSuspendPage> {
   int companyId = 0;
   final _formKey = GlobalKey<FormState>();
 
-
   Future<bool> applyToCompany(Company company, Driver driver) async {
     print('this one executed');
 
@@ -58,21 +57,21 @@ class _DriverSuspendPageState extends State<DriverSuspendPage> {
     var shPrefs = SharedPrefs();
     List<String> staffList = await shPrefs.getAppliedStaffs();
 
-    String emailInQuestion = widget.driver.email;
+    String phoneInQuestion = widget.driver.phone;
 
-    List<Map<String, String>> emails = staffList.map((stf) {
+    List<Map<String, String>> phones = staffList.map((stf) {
       List<String> splitted = stf.split(':');
       return {
-        'email': splitted.first,
+        'phone': splitted.first,
         'cId': splitted.last,
       };
     }).toList();
 
-    List<String> emls = staffList.map((stf) => stf.split(':').first).toList();
+    List<String> phns = staffList.map((stf) => stf.split(':').first).toList();
 
     setState(() {
       //isAppliedToCompany = emails.any((map) => map['email'] == emailInQuestion);
-      isAppliedToCompany = emls.contains(emailInQuestion);
+      isAppliedToCompany = phns.contains(phoneInQuestion);
     });
   }
 
@@ -91,23 +90,24 @@ class _DriverSuspendPageState extends State<DriverSuspendPage> {
     var shPrefs = SharedPrefs();
     List<String> staffList = await shPrefs.getAppliedStaffs();
 
-    String emailInQuestion = widget.driver.email;
+    String phoneInQuestion = widget.driver.phone;
 
-    List<Map<String, String>> emails = staffList.map((stf) {
+    List<Map<String, String>> phones = staffList.map((stf) {
       List<String> splitted = stf.split(':');
       return {
-        'email': splitted.first,
+        'phones': splitted.first,
         'company_id': splitted.last,
       };
     }).toList();
 
     Map<String, String> ourMap =
-        emails.firstWhere((stf) => stf['email'] == emailInQuestion);
+        phones.firstWhere((stf) => stf['phone'] == phoneInQuestion);
 
     final driver = widget.driver;
     int companyId = int.parse(ourMap['company_id']!);
     final tenant = TenantApi();
-    bool isSent = await tenant.sendEmployeeNotif(companyId: companyId, theDriver: driver, employeeRole: 'driver');
+    bool isSent = await tenant.sendEmployeeNotif(
+        companyId: companyId, theDriver: driver, employeeRole: 'driver');
 
     return isSent;
   }
@@ -140,7 +140,7 @@ class _DriverSuspendPageState extends State<DriverSuspendPage> {
                     child: SizedBox(
                       child: Text(
                         'Apply',
-                        style: GoogleFonts.montserrat(
+                        style: GoogleFonts.roboto(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
@@ -178,7 +178,7 @@ class _DriverSuspendPageState extends State<DriverSuspendPage> {
         backgroundColor: Colors.white,
         title: Text(
           'Choose Company',
-          style: GoogleFonts.montserrat(),
+          style: GoogleFonts.roboto(),
         ),
         actions: [
           IconButton(

@@ -49,7 +49,7 @@ class _CreateStockState extends State<CreateStock> {
 
       var order = Order(
         name: orderName,
-        staffEmail: widget.staff.email,
+        staffPhone: widget.staff.phone,
       );
 
       //var dbHelper = DatabaseHelper();

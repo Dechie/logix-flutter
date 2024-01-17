@@ -20,9 +20,12 @@ class CompanyDashboard extends StatefulWidget {
 class _CompanyDashboardState extends State<CompanyDashboard> {
   var companies = [];
   void fetchCompanies() async {
-    String? token = widget.admin.token;
+    String? token = widget.admin.token ?? '';
     final api = Api();
-    List<Company> fetched = await api.fetchCompanies(token!);
+    List<Company> fetched = [];
+    int stCode = 0;
+    (fetched, stCode) = await api.fetchCompanies(token);
+    print(stCode);
 
     if (fetched.isNotEmpty) {
       print(fetched);
@@ -55,41 +58,45 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
 
   void createNewCompany() {
     showModalBottomSheet(
-      isScrollControlled: true,
+        useSafeArea: true,
         context: context,
         builder: (ctx) {
           return Padding(
             padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: nameController,
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value.trim().length <= 1 ||
-                              value.trim().length >= 50) {
-                            return 'Must be between 1 and 50 characters';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          companyName = value!;
-                        },
-                      ),
-                    ],
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * .45,
+              child: Column(
+                children: [
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: nameController,
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.trim().length <= 1 ||
+                                value.trim().length >= 50) {
+                              return 'Must be between 1 and 50 characters';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            companyName = value!;
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: sendFormData,
-                  child: const Text('Submit'),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  TextButton(
+                    onPressed: sendFormData,
+                    child: const Text('Submit'),
+                  ),
+                ],
+              ),
             ),
           );
         });
