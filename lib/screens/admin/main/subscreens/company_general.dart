@@ -11,16 +11,21 @@ class CompanyGeneral extends StatefulWidget {
     super.key,
     required this.company,
     required this.admin,
+    required this.title,
+    required this.scaffoldKey,
   });
 
   final Admin admin;
   final Company company;
+  final String title;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   State<CompanyGeneral> createState() => _CompanyGeneralState();
 }
 
 class _CompanyGeneralState extends State<CompanyGeneral> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   var projects = [];
   final tenantApi = TenantApi();
 
@@ -130,6 +135,52 @@ class _CompanyGeneralState extends State<CompanyGeneral> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.menu,
+            color: Colors.white,
+          ),
+          onPressed: () => widget.scaffoldKey.currentState?.openDrawer(),
+        ),
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        // actions: [
+        //   IconButton(
+        //     onPressed: onRefresh,
+        //     icon: const Icon(
+        //       Icons.refresh,
+        //       color: GlobalConstants.mainBlue,
+        //     ),
+        //   ),
+        // ],
+        flexibleSpace: SizedBox(
+          height: double.infinity,
+          width: 20,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(25),
+                bottomRight: Radius.circular(25),
+              ),
+              gradient: LinearGradient(
+                colors: [
+                  GlobalConstants.mainBlue,
+                  GlobalConstants.mainBlue.withOpacity(.85),
+                  GlobalConstants.mainBlue.withOpacity(.45),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(left: 20),
         child: Column(

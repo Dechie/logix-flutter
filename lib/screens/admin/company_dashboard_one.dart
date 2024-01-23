@@ -10,31 +10,17 @@ class CompanyDashboard extends StatefulWidget {
   const CompanyDashboard({
     super.key,
     required this.admin,
+    required this.companies,
   });
   final Admin admin;
+  final List<Company> companies;
 
   @override
   _CompanyDashboardState createState() => _CompanyDashboardState();
 }
 
 class _CompanyDashboardState extends State<CompanyDashboard> {
-  var companies = [];
-  void fetchCompanies() async {
-    String? token = widget.admin.token ?? '';
-    final api = Api();
-    List<Company> fetched = [];
-    int stCode = 0;
-    (fetched, stCode) = await api.fetchCompanies(token);
-    print(stCode);
-
-    if (fetched.isNotEmpty) {
-      print(fetched);
-    }
-    setState(() {
-      companies = fetched;
-    });
-  }
-
+  late List<Company> companies;
   String companyName = '';
   final nameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -105,92 +91,97 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
   @override
   void initState() {
     super.initState();
-    fetchCompanies();
+    // fetchCompanies();
+    companies = widget.companies;
+    for (var co in companies) {
+      print('name: ${co.name}');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 11,
-                  child: Container(
-                      alignment: Alignment.center, child: Text('Companies')),
+      padding: const EdgeInsets.all(30),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                flex: 11,
+                child: Container(
+                    alignment: Alignment.center, child: Text('Companies')),
+              ),
+              Expanded(
+                flex: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(3),
+                  // child: IconButton(
+                  //   onPressed: fetchCompanies,
+                  //   icon: const Icon(Icons.refresh),
+                  // ),
                 ),
-                Expanded(
-                  flex: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(3),
-                    child: FloatingActionButton(
-                      onPressed: fetchCompanies,
-                      child: const Icon(Icons.refresh),
-                    ),
-                  ),
-                ),
-                //const Spacer(),
-                Expanded(
-                  flex: 4,
-                  child: Padding(
-                    padding: const EdgeInsets.all(3),
-                    child: FloatingActionButton(
-                      onPressed: createNewCompany,
-                      child: const Text('New'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            const Divider(),
-            const SizedBox(height: 10),
-            companies.isNotEmpty
-                ? Expanded(
-                    child: ListView.separated(
-                      itemCount: companies.length,
-                      itemBuilder: (ctx, index) => GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => DashBoard(
-                                company: companies[index],
-                                admin: widget.admin,
-                                title: companies[index].name,
-                              ),
+              ),
+              //const Spacer(),
+              // Expanded(
+              //   flex: 4,
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(3),
+              //     child: FloatingActionButton(
+              //       onPressed: createNewCompany,
+              //       child: const Text('New'),
+              //     ),
+              //   ),
+              // ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          const Divider(),
+          const SizedBox(height: 10),
+          companies.isNotEmpty
+              ? Expanded(
+                  child: ListView.separated(
+                    itemCount: companies.length,
+                    itemBuilder: (ctx, index) => GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => DashBoard(
+                              company: companies[index],
+                              admin: widget.admin,
+                              title: companies[index].name,
                             ),
-                          );
-                        },
-                        child: Card(
-                          elevation: 5,
-                          shadowColor: GlobalConstants.mainBlue,
-                          child: ListTile(
-                            title: Text(
-                              companies[index].name,
-                              style: const TextStyle(
-                                fontSize: 18,
-                              ),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        elevation: 5,
+                        shadowColor: GlobalConstants.mainBlue,
+                        child: ListTile(
+                          title: Text(
+                            companies[index].name,
+                            style: const TextStyle(
+                              fontSize: 18,
                             ),
-                            subtitle: Text(
-                              'id: ${companies[index].companyId}',
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
+                          ),
+                          subtitle: Text(
+                            'id: ${companies[index].companyId}',
+                            style: const TextStyle(
+                              fontSize: 14,
                             ),
                           ),
                         ),
                       ),
-                      separatorBuilder: (ctx, index) =>
-                          const SizedBox(height: 10),
                     ),
-                  )
-                : const Center(
-                    child: Text('No companies so far'),
+                    separatorBuilder: (ctx, index) =>
+                        const SizedBox(height: 10),
                   ),
-          ],
-        ));
+                )
+              : const Center(
+                  child: Text('No companies so far'),
+                ),
+        ],
+      ),
+    );
   }
 }

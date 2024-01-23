@@ -27,6 +27,7 @@ class WarehouseMainPage extends StatefulWidget {
 }
 
 class _WarehouseMainPageState extends State<WarehouseMainPage> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   bool _moreAccountsTabSelected = true;
   final commons = CommonMethos();
   Widget active = const Center(
@@ -46,20 +47,56 @@ class _WarehouseMainPageState extends State<WarehouseMainPage> {
     final staff = widget.staff;
 
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.menu,
+            color: Colors.white,
+          ),
+          onPressed: () => scaffoldKey.currentState?.openDrawer(),
+        ),
         backgroundColor: Colors.white,
         title: Text(
           'Logix Staff Page',
-          style: GoogleFonts.roboto(),
+          style: GoogleFonts.montserrat(
+            textStyle: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
         ),
         actions: [
           IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(Icons.arrow_back_ios),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
           ),
         ],
+        flexibleSpace: SizedBox(
+          height: double.infinity,
+          width: 20,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(25),
+                bottomRight: Radius.circular(25),
+              ),
+              gradient: LinearGradient(
+                colors: [
+                  GlobalConstants.mainBlue,
+                  GlobalConstants.mainBlue.withOpacity(.85),
+                  GlobalConstants.mainBlue.withOpacity(.45),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
+        ),
       ),
       drawer: Drawer(
         backgroundColor: GlobalConstants.mainBlue,

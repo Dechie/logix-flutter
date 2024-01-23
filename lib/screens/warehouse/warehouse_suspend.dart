@@ -188,6 +188,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
 
   void onApplyCompany(Company company) {
     showModalBottomSheet(
+        useSafeArea: true,
         context: context,
         builder: (ctx) {
           return Container(
@@ -344,64 +345,121 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                     ),
             )
           : Center(
-              child: Column(
-                children: [
-                  const Text('Enter your company code to apply'),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * .7,
-                    height: 70,
-                    child: Form(
-                      key: _formKey,
-                      child: TextFormField(
-                        controller: companyIdController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          label: const Text('company code'),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * .8,
+                height: 200,
+                child: Column(
+                  children: [
+                    Text(
+                      'Enter your company code to apply',
+                      style: GoogleFonts.montserrat(
+                        color: Colors.grey,
+                        textStyle: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
                         ),
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value.trim().length <= 1 ||
-                              value.trim().length >= 50 ||
-                              int.tryParse(value) is! int) {
-                            return 'Please enter a number';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          companyId = int.parse(value!);
-                        },
                       ),
                     ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      onApplyToCompany(widget.staff);
-                    },
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * .7,
+                    const SizedBox(height: 15),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * .8,
                       height: 70,
-                      child: DecoratedBox(
-                        decoration: const BoxDecoration(
-                            color: GlobalConstants.mainBlue),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Apply',
-                            style: GoogleFonts.roboto(
-                              textStyle: const TextStyle(
-                                color: Colors.white,
+                      child: Form(
+                        key: _formKey,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 8,
+                              child: SizedBox(
+                                width: double.infinity,
+                                height: double.infinity,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 3,
+                                      color: GlobalConstants.mainBlue,
+                                    ),
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      bottomLeft: Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 0),
+                                    child: TextFormField(
+                                      controller: companyIdController,
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10),
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: Colors.transparent,
+                                          ),
+                                        ),
+                                        //label: const Text('company code'),
+                                        hintText: 'Company Code',
+                                      ),
+                                      validator: (value) {
+                                        if (value == null ||
+                                            value.isEmpty ||
+                                            value.trim().length <= 1 ||
+                                            value.trim().length >= 50 ||
+                                            int.tryParse(value) is! int) {
+                                          return 'Please enter a number';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) {
+                                        companyId = int.parse(value!);
+                                      },
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            Expanded(
+                              flex: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 5),
+                                child: InkWell(
+                                  onTap: () {
+                                    onApplyToCompany(widget.staff);
+                                  },
+                                  child: const SizedBox(
+                                    width: 50,
+                                    height: 70,
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: GlobalConstants.mainBlue,
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(10),
+                                          bottomRight: Radius.circular(10),
+                                        ),
+                                      ),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 30,
+                                          //weight: 50.0,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
     );

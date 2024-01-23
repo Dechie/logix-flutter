@@ -15,10 +15,14 @@ class EmployeesWidget extends StatefulWidget {
     super.key,
     required this.admin,
     required this.company,
+    required this.title,
+    required this.scaffoldKey,
   });
 
   final Admin admin;
   final Company company;
+  final String title;
+  final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   State<EmployeesWidget> createState() => _EmployeesWidgetState();
@@ -26,6 +30,7 @@ class EmployeesWidget extends StatefulWidget {
 
 class _EmployeesWidgetState extends State<EmployeesWidget>
     with TickerProviderStateMixin {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   List<Staff> staffs = [];
   List<Driver> drivers = [];
   List<Warehouse> warehouses = [];
@@ -115,44 +120,92 @@ class _EmployeesWidgetState extends State<EmployeesWidget>
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return SizedBox(
-      width: size.width,
-      height: size.height,
-      child: Column(
-        children: [
-          TabBar(
-            tabs: _tabs,
-            controller: _tabController,
-            labelColor: GlobalConstants.mainBlue.withAlpha(200),
-            indicatorColor: GlobalConstants.mainBlue.withAlpha(200),
-            labelStyle: GoogleFonts.roboto(
-              textStyle: const TextStyle(fontSize: 18),
-            ),
-            unselectedLabelColor: Colors.black,
-            indicatorSize: TabBarIndicatorSize.tab,
-            indicator: BoxDecoration(
-              color: GlobalConstants.mainBlue.withOpacity(0.2),
-              border: Border.all(
-                width: 1,
-                color: GlobalConstants.mainBlue.withOpacity(0.4),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.menu,
+            color: Colors.white,
+          ),
+          onPressed: () => widget.scaffoldKey.currentState?.openDrawer(),
+        ),
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        // actions: [
+        //   IconButton(
+        //     onPressed: onRefresh,
+        //     icon: const Icon(
+        //       Icons.refresh,
+        //       color: GlobalConstants.mainBlue,
+        //     ),
+        //   ),
+        // ],
+        flexibleSpace: SizedBox(
+          height: double.infinity,
+          width: 20,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(25),
+                bottomRight: Radius.circular(25),
               ),
-              borderRadius: BorderRadius.circular(50),
+              gradient: LinearGradient(
+                colors: [
+                  GlobalConstants.mainBlue,
+                  GlobalConstants.mainBlue.withOpacity(.85),
+                  GlobalConstants.mainBlue.withOpacity(.45),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
           ),
-          const SizedBox(height: 20),
-          Expanded(
-              child: TabBarView(
-            controller: _tabController,
-            children: [
-              StaffList(
-                staff: staffs,
-                company: widget.company,
-                admin: widget.admin,
+        ),
+      ),
+      body: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
+          children: [
+            TabBar(
+              tabs: _tabs,
+              controller: _tabController,
+              labelColor: GlobalConstants.mainBlue.withAlpha(200),
+              indicatorColor: GlobalConstants.mainBlue.withAlpha(200),
+              labelStyle: GoogleFonts.roboto(
+                textStyle: const TextStyle(fontSize: 18),
               ),
-              DriversList(drivers: drivers),
-            ],
-          )),
-        ],
+              unselectedLabelColor: Colors.black,
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicator: BoxDecoration(
+                color: GlobalConstants.mainBlue.withOpacity(0.2),
+                border: Border.all(
+                  width: 1,
+                  color: GlobalConstants.mainBlue.withOpacity(0.4),
+                ),
+                borderRadius: BorderRadius.circular(50),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+                child: TabBarView(
+              controller: _tabController,
+              children: [
+                StaffList(
+                  staff: staffs,
+                  company: widget.company,
+                  admin: widget.admin,
+                ),
+                DriversList(drivers: drivers),
+              ],
+            )),
+          ],
+        ),
       ),
     );
   }

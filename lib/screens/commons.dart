@@ -84,9 +84,12 @@ class CommonMethos {
       padding: const EdgeInsets.only(right: 5),
       height: (users.length + 1) * 45,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            width: 3,
+            color: GlobalConstants.mainBlue,
+          ),),
       alignment: Alignment.topLeft,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

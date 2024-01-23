@@ -8,7 +8,6 @@ import '../../models/company.dart';
 import '../../models/route.dart';
 import '../../utils/constants.dart';
 import 'main/subscreens/admin_warehouse.dart';
-import 'main/subscreens/projects_screen.dart';
 import 'main/subscreens/routes_screen.dart';
 
 typedef MyFunctionCallback = void Function(BuildContext context, int screen);
@@ -25,14 +24,18 @@ class DashBoard extends StatefulWidget {
   final Company company;
   final Admin admin;
   @override
-  _DashBoardState createState() => _DashBoardState();
+  State<DashBoard> createState() => _DashBoardState();
 }
 
 class _DashBoardState extends State<DashBoard> {
   late Widget activeScreen;
 
-  var projectScreen,
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  String activeScreenTitle = 'Routes';
+
+  late Widget companyDashboardScreen,
       routeScreen,
+      projectScreen,
       generalScreen,
       adminWarehouseScreen,
       employeesScreen;
@@ -41,95 +44,83 @@ class _DashBoardState extends State<DashBoard> {
   late int tenantId;
   late List<dynamic> screenWithIndex;
 
+  void backFunction() {
+    Navigator.pop(context);
+  }
+
   @override
   void initState() {
     super.initState();
-    projectScreen = ProjectScreen(
-      admin: widget.admin,
-      company: widget.company,
-    );
+    //scaffoldKey = GlobalKey<ScaffoldState>();
+    // companyDashboardScreen = CompanyDashboard(admin: admin);
+    //drawer2 = createDrawer();
+    // projectScreen = ProjectScreen(
+    //   admin: admin,
+    //   company: company,
+    //   title: 'Projects',
+    //   scaffoldKey: scaffoldKey,
+    // );
     routeScreen = RouteScreen(
       admin: widget.admin,
       company: widget.company,
+      title: 'Routes',
+      scaffoldKey: scaffoldKey,
     );
     adminWarehouseScreen = AdminWarehouseScreen(
       admin: widget.admin,
       company: widget.company,
+      title: 'Warehouses',
+      scaffoldKey: scaffoldKey,
+      //drawer: drawer2,
     );
     generalScreen = CompanyGeneral(
       company: widget.company,
       admin: widget.admin,
+      title: 'General',
+      scaffoldKey: scaffoldKey,
     );
 
     employeesScreen = EmployeesWidget(
       admin: widget.admin,
       company: widget.company,
+      title: 'Employees',
+      scaffoldKey: scaffoldKey,
     );
 
-    activeScreen = projectScreen;
+    activeScreen = generalScreen;
 
     screenWithIndex = [
-      routeScreen,
-      projectScreen,
       generalScreen,
+      routeScreen,
       adminWarehouseScreen,
       employeesScreen,
+      //companyDashboardScreen,
     ];
+
+    setState(() {});
   }
 
-  void onRefresh() {
-    /*
-    activeScreen == routeScreen
-        ? routeScreen.refresh()
-        : projectScreen.refresh();
-        */
-  }
-
-  void switchScreen(int newScreen) {
-    /*
-    switch (newScreen) {
-      case 0:
-        activeScreen = routeScreen;
-        break;
-      case 1:
-        activeScreen = projectScreen;
-        break;
-    }
-    */
+  void switchScreen(int newScreen, String title) {
     activeScreen = screenWithIndex[newScreen];
+    activeScreenTitle = title;
     setState(() {});
   }
 
   void switcher(BuildContext context, int screen) {
-    switchScreen(screen);
+    switchScreen(screen, 'Routes');
     Navigator.pop(context);
   }
 
   @override
-  Widget build(BuildContext context) {
+  build(BuildContext context) {
     final admin = widget.admin;
     final company = widget.company;
     String title = widget.title;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: onRefresh,
-            icon: const Icon(
-              Icons.refresh,
-              color: GlobalConstants.mainBlue,
-            ),
-          ),
-        ],
-      ),
+      key: scaffoldKey,
       drawer: Drawer(
-        backgroundColor: GlobalConstants.mainBlue,
+        backgroundColor: Colors.white,
         width: MediaQuery.of(context).size.width * .6,
         child: Column(
           children: [
@@ -138,7 +129,7 @@ class _DashBoardState extends State<DashBoard> {
               width: double.infinity,
               height: 150,
               decoration: const BoxDecoration(
-                color: Colors.white,
+                color: GlobalConstants.mainBlue,
               ),
               alignment: Alignment.bottomLeft,
               child: Column(
@@ -149,24 +140,38 @@ class _DashBoardState extends State<DashBoard> {
                     admin.name,
                     style: GoogleFonts.roboto(
                       textStyle: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: GlobalConstants.mainBlue,
-                      ),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: Colors.white),
                     ),
                   ),
                   Text(
                     '${company.name} id${company.companyId}',
                     style: GoogleFonts.roboto(
                       textStyle: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                        color: GlobalConstants.mainBlue,
-                      ),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                          //color: GlobalConstants.mainBlue,
+                          color: Colors.white),
                     ),
                   ),
                 ],
               ),
+            ),
+            ListTile(
+              title: Text(
+                'Companies',
+                style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                backFunction();
+              },
             ),
             ListTile(
               title: Text(
@@ -179,7 +184,7 @@ class _DashBoardState extends State<DashBoard> {
                 ),
               ),
               onTap: () {
-                switchScreen(2);
+                switchScreen(0, 'General');
                 Navigator.pop(context);
               },
             ),
@@ -194,82 +199,7 @@ class _DashBoardState extends State<DashBoard> {
                 ),
               ),
               onTap: () {
-                switchScreen(0);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text(
-                'Projects',
-                style: GoogleFonts.roboto(
-                  textStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              onTap: () {
-                switchScreen(1);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text(
-                'Travels',
-                style: GoogleFonts.roboto(
-                  textStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              onTap: () {
-                switchScreen(1);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text(
-                'Orders',
-                style: GoogleFonts.roboto(
-                  textStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              onTap: () {
-                switchScreen(1);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text(
-                'Drivers',
-                style: GoogleFonts.roboto(
-                  textStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              onTap: () {
-                switchScreen(1);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text(
-                'Staff',
-                style: GoogleFonts.roboto(
-                  textStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              onTap: () {
-                switchScreen(1);
+                switchScreen(1, 'Routes');
                 Navigator.pop(context);
               },
             ),
@@ -284,7 +214,7 @@ class _DashBoardState extends State<DashBoard> {
                 ),
               ),
               onTap: () {
-                switchScreen(3);
+                switchScreen(2, 'Warehouses');
                 Navigator.pop(context);
               },
             ),
@@ -299,14 +229,145 @@ class _DashBoardState extends State<DashBoard> {
                 ),
               ),
               onTap: () {
-                switchScreen(4);
+                switchScreen(3, 'Employees');
                 Navigator.pop(context);
               },
             ),
+            ListTile(
+              title: Text(
+                'Travels',
+                style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              onTap: () {
+                switchScreen(0, 'Travels');
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Orders',
+                style: GoogleFonts.roboto(
+                  textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              onTap: () {
+                switchScreen(0, 'Orders');
+                Navigator.pop(context);
+              },
+            ),
+            // ListTile(
+            //   title: Text(
+            //     'Drivers',
+            //     style: GoogleFonts.roboto(
+            //       textStyle: const TextStyle(
+            //         color: Colors.white,
+            //         fontWeight: FontWeight.bold,
+            //       ),
+            //     ),
+            //   ),
+            //   onTap: () {
+            //     switchScreen(0, 'Drivers');
+            //     Navigator.pop(context);
+            //   },
+            // ),
+            // ListTile(
+            //   title: Text(
+            //     'Staff',
+            //     style: GoogleFonts.roboto(
+            //       textStyle: const TextStyle(
+            //         color: Colors.white,
+            //         fontWeight: FontWeight.bold,
+            //       ),
+            //     ),
+            //   ),
+            //   onTap: () {
+            //     switchScreen(0, 'Staff');
+            //     Navigator.pop(context);
+            //   },
+            // ),
           ],
         ),
       ),
       body: activeScreen,
+    );
+  }
+}
+
+class DetailView extends StatelessWidget {
+  const DetailView({
+    super.key,
+    required this.numValue,
+    required this.title,
+    required this.sub,
+  });
+
+  final int numValue;
+  final String title;
+  final String sub;
+
+  @override
+  build(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * .8,
+      height: 120,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 50,
+            height: 50,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: GlobalConstants.mainBlue,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  numValue.toString(),
+                  style: GoogleFonts.roboto(
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w800),
+                ),
+                Text(
+                  sub,
+                  style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -324,7 +385,7 @@ class CustomTile extends StatelessWidget {
   final String text;
 
   @override
-  Widget build(BuildContext context) {
+  build(BuildContext context) {
     return ListTile(
       title: Text(
         text,

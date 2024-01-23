@@ -5,21 +5,28 @@ import '../../../../models/company.dart';
 import '../../../../models/route.dart';
 import '../../../../models/warehouse.dart';
 import '../../../../services/api/tenant/tenant_api.dart';
+import '../../../../utils/constants.dart';
 
 class AdminWarehouseScreen extends StatefulWidget {
   const AdminWarehouseScreen({
     super.key,
     required this.admin,
     required this.company,
+    required this.title,
+    required this.scaffoldKey,
   });
   final Company company;
   final Admin admin;
+  final String title;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
   @override
   State<AdminWarehouseScreen> createState() => _AdminWarehouseScreenState();
 }
 
 class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
   final _formKey = GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   String name = '';
   String address = '';
@@ -71,8 +78,7 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
   void createWarehouse() async {
     //final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
     showModalBottomSheet(
-
-      isScrollControlled: true,
+        isScrollControlled: true,
         context: context,
         builder: (context) {
           return Container(
@@ -164,6 +170,52 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.menu,
+            color: Colors.white,
+          ),
+          onPressed: () => widget.scaffoldKey.currentState?.openDrawer(),
+        ),
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        // actions: [
+        //   IconButton(
+        //     onPressed: onRefresh,
+        //     icon: const Icon(
+        //       Icons.refresh,
+        //       color: GlobalConstants.mainBlue,
+        //     ),
+        //   ),
+        // ],
+        flexibleSpace: SizedBox(
+          height: double.infinity,
+          width: 20,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(25),
+                bottomRight: Radius.circular(25),
+              ),
+              gradient: LinearGradient(
+                colors: [
+                  GlobalConstants.mainBlue,
+                  GlobalConstants.mainBlue.withOpacity(.85),
+                  GlobalConstants.mainBlue.withOpacity(.45),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
+        ),
+      ),
       body: warehouses.isNotEmpty
           ? Center(
               child: SizedBox(
@@ -172,7 +224,7 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                     const Text(
+                    const Text(
                       'Warehouses',
                       style: TextStyle(
                         color: Colors.blue,

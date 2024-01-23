@@ -17,7 +17,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'my app',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: GlobalConstants.mainBlue),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: GlobalConstants.mainBlue,
+        ),
         useMaterial3: true,
       ),
       home: const SplashScreen(),

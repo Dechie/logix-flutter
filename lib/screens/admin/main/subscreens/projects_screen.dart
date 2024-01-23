@@ -3,16 +3,21 @@ import 'package:flutter/material.dart';
 import '../../../../models/admin.dart';
 import '../../../../models/company.dart';
 import '../../../../services/api/tenant/tenant_api.dart';
+import '../../../../utils/constants.dart';
 
 class ProjectScreen extends StatefulWidget {
-  const ProjectScreen({
+  ProjectScreen({
     super.key,
     required this.company,
     required this.admin,
+    required this.title,
+    required this.scaffoldKey,
   });
 
   final Admin admin;
   final Company company;
+  final String title;
+  GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   _ProjectScreenState createState() => _ProjectScreenState();
@@ -53,12 +58,12 @@ class _ProjectScreenState extends State<ProjectScreen> {
     } else if (statusCode == 302) {
       Navigator.pop(context);
     }
-  } 
+  }
 
   void createProject() async {
     //final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
     showModalBottomSheet(
-      isScrollControlled: true,
+        isScrollControlled: true,
         context: context,
         builder: (context) {
           /*
@@ -129,6 +134,54 @@ class _ProjectScreenState extends State<ProjectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: widget.scaffoldKey,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.menu,
+            color: Colors.white,
+          ),
+          onPressed: () => widget.scaffoldKey.currentState?.openDrawer(),
+        ),
+        title: Text(
+          widget.title,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        // actions: [
+        //   IconButton(
+        //     onPressed: onRefresh,
+        //     icon: const Icon(
+        //       Icons.refresh,
+        //       color: GlobalConstants.mainBlue,
+        //     ),
+        //   ),
+        // ],
+        flexibleSpace: SizedBox(
+          height: double.infinity,
+          width: 20,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(25),
+                bottomRight: Radius.circular(25),
+              ),
+              gradient: LinearGradient(
+                colors: [
+                  GlobalConstants.mainBlue,
+                  GlobalConstants.mainBlue.withOpacity(.85),
+                  GlobalConstants.mainBlue.withOpacity(.45),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
+        ),
+      ),
+      //drawer: widget.drawer,
       body: projects.isNotEmpty
           ? ListView.builder(
               itemCount: projects.length,
