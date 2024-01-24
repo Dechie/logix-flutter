@@ -89,6 +89,7 @@ class Auth {
         print('request successful');
         final token = response.data['token'];
         final id = response.data['id'];
+        print('registered user id: ${response.data['id']}');
         final authed = AuthedUser(
           id: id!,
           name: staff.name,

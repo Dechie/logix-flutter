@@ -29,8 +29,8 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   String name = '';
-  String address = '';
-  List<String> addressCities = ['Addis Ababa', 'Dire Dawa', 'Adama'];
+  String location = '';
+  List<String> locationCities = ['Addis Ababa', 'Dire Dawa', 'Adama'];
 
   void sendFormData() async {
     if (_formKey.currentState!.validate()) {
@@ -42,13 +42,13 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
   final tenantApi = TenantApi();
 
   final _nameController = TextEditingController();
-  final _addressController = TextEditingController();
+  final _locationController = TextEditingController();
 
   Future<int> onCreateWarehouse() async {
     late int statusCode;
     name = _nameController.text;
 
-    var newWarehouse = Warehouse(name: name, address: address);
+    var newWarehouse = Warehouse(name: name, location: location);
 
     statusCode = await tenantApi.createWarehouse(
         newWarehouse, widget.admin, widget.company);
@@ -123,15 +123,15 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
                             child: DropdownMenu<String>(
                               width: 160,
                               initialSelection: '',
-                              controller: _addressController,
+                              controller: _locationController,
                               requestFocusOnTap: true,
-                              label: const Text('Choose address'),
+                              label: const Text('Choose location'),
                               onSelected: (value) {
                                 setState(() {
-                                  address = value!;
+                                  location = value!;
                                 });
                               },
-                              dropdownMenuEntries: addressCities
+                              dropdownMenuEntries: locationCities
                                   .map<DropdownMenuEntry<String>>(
                                     (type) => DropdownMenuEntry<String>(
                                       value: type,
@@ -185,15 +185,17 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
             color: Colors.white,
           ),
         ),
-        // actions: [
-        //   IconButton(
-        //     onPressed: onRefresh,
-        //     icon: const Icon(
-        //       Icons.refresh,
-        //       color: GlobalConstants.mainBlue,
-        //     ),
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            onPressed: () {
+              fetchWarehouses(widget.company.companyId!);
+            },
+            icon: const Icon(
+              Icons.refresh,
+              color: Colors.black,
+            ),
+          ),
+        ],
         flexibleSpace: SizedBox(
           height: double.infinity,
           width: 20,
@@ -217,52 +219,38 @@ class _AdminWarehouseScreenState extends State<AdminWarehouseScreen> {
         ),
       ),
       body: warehouses.isNotEmpty
-          ? Center(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * .8,
-                height: MediaQuery.of(context).size.height * .76,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Warehouses',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.separated(
-                        itemCount: warehouses.length,
-                        itemBuilder: (ctx, index) => Card(
-                          elevation: 5,
-                          shadowColor: const Color.fromARGB(255, 33, 47, 243),
-                          child: ListTile(
-                            title: Text(
-                              warehouses[index].name,
-                              style: const TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                            subtitle: Row(
-                              children: [
-                                const Icon(Icons.location_on),
-                                Text(
-                                  warehouses[index].address,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ],
-                            ),
+          ? Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Center(
+                child: Expanded(
+                  child: ListView.separated(
+                    itemCount: warehouses.length,
+                    itemBuilder: (ctx, index) => Card(
+                      elevation: 5,
+                      shadowColor: const Color.fromARGB(255, 33, 47, 243),
+                      child: ListTile(
+                        title: Text(
+                          warehouses[index].name,
+                          style: const TextStyle(
+                            fontSize: 18,
                           ),
                         ),
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: 10),
+                        subtitle: Row(
+                          children: [
+                            const Icon(Icons.location_on),
+                            Text(
+                              warehouses[index].location,
+                              style: const TextStyle(
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ],
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 10),
+                  ),
                 ),
               ),
             )

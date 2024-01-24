@@ -38,7 +38,8 @@ class _AssignWarehouseWidgetState extends State<AssignWarehouseWidget> {
   }
 
   void onAssignWarehouse(Warehouse warehouse, Staff staff) async {
-    int statusCode = await tenantApi.applyStaffToWarehouse(warehouse, staff, widget.admin, widget.company);
+    int statusCode = await tenantApi.applyStaffToWarehouse(
+        warehouse, staff, widget.admin, widget.company);
   }
 
   @override
@@ -77,7 +78,9 @@ class _AssignWarehouseWidgetState extends State<AssignWarehouseWidget> {
                               child: Column(
                                 children: [
                                   Text('Staff: ${staff.name}'),
-                                  Text('Warehouse: ${warehouses[index].name}'),
+                                  Text(
+                                    'Warehouse: ${warehouses[index].name} -> ${warehouses[index].id}',
+                                  ),
                                 ],
                               ),
                             ),

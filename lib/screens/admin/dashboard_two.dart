@@ -149,10 +149,11 @@ class _DashBoardState extends State<DashBoard> {
                     '${company.name} id${company.companyId}',
                     style: GoogleFonts.roboto(
                       textStyle: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15,
-                          //color: GlobalConstants.mainBlue,
-                          color: Colors.white),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        //color: GlobalConstants.mainBlue,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
@@ -163,7 +164,7 @@ class _DashBoardState extends State<DashBoard> {
                 'Companies',
                 style: GoogleFonts.roboto(
                   textStyle: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -178,7 +179,7 @@ class _DashBoardState extends State<DashBoard> {
                 'General',
                 style: GoogleFonts.roboto(
                   textStyle: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -193,7 +194,7 @@ class _DashBoardState extends State<DashBoard> {
                 'Routes',
                 style: GoogleFonts.roboto(
                   textStyle: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -208,7 +209,7 @@ class _DashBoardState extends State<DashBoard> {
                 'Warehouses',
                 style: GoogleFonts.roboto(
                   textStyle: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -223,7 +224,7 @@ class _DashBoardState extends State<DashBoard> {
                 'Employees',
                 style: GoogleFonts.roboto(
                   textStyle: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -238,7 +239,7 @@ class _DashBoardState extends State<DashBoard> {
                 'Travels',
                 style: GoogleFonts.roboto(
                   textStyle: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -253,7 +254,7 @@ class _DashBoardState extends State<DashBoard> {
                 'Orders',
                 style: GoogleFonts.roboto(
                   textStyle: const TextStyle(
-                    color: Colors.white,
+                    color: Colors.grey,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

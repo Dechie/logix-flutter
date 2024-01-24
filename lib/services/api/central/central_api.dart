@@ -164,6 +164,7 @@ class Api {
   }
 
   Future<Company> findCompany(int companyId) async {
+    print('companyid: $companyId');
     var dio = Dio();
     var url = '${AppUrls.baseUrl}/companies/$companyId';
 

@@ -16,7 +16,20 @@ class AuthedUser {
   });
 
   factory AuthedUser.fromMap(Map<String, dynamic> json) {
+    int id = 0;
+    if (json['id'] is! int) {
+      print('it\'s an int');
+      String idS = json['id'];
+      idS = idS.trimLeft();
+      idS = idS.trimRight();
+      id = int.parse(idS);
+    } else {
+      print('it\'s not an int');
+      id = json['id'];
+    }
+
     return AuthedUser(
+      id: id,
       name: json['name'],
       phone: json['phone'],
       role: json['role'],
@@ -26,10 +39,16 @@ class AuthedUser {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'name': name,
       'phone': phone,
       'role': role,
       'token': token,
     };
+  }
+
+  @override
+  String toString() {
+    return '{"id": $id, "name": "$name", "phone": "$phone", "role": "$role", "token": "$token"}';
   }
 }

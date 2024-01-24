@@ -5,15 +5,18 @@ class Driver {
   final String phone;
   String? password;
   String? token;
+  int? id;
 
   Driver({
     required this.name,
     required this.phone,
     this.password,
     this.token,
+    this.id,
   });
   factory Driver.fromAuthedUser(AuthedUser user) {
     return Driver(
+      id: user.id,
       name: user.name,
       phone: user.phone,
       token: user.token,

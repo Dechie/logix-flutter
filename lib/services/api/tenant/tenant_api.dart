@@ -126,13 +126,13 @@ class TenantApi {
       switch (employeeRole) {
         case "driver":
           {
-            url = '${AppUrls.baseUrl}/staff/applyDriver';
             Driver driver = theDriver!;
+            url = '${AppUrls.baseUrl}/driver/applyDriver';
             response = await dio.post(
               url,
               data: {
                 'company_id': company.companyId,
-                'staff_phone': driver.phone,
+                'driver_phone': driver.phone,
               },
               options: Options(headers: {
                 'Authorization': 'Bearer ${driver.token}',
@@ -143,13 +143,13 @@ class TenantApi {
           break;
         case "staff":
           {
-            url = '${AppUrls.baseUrl}/staff/applyStaff';
             Staff staff = theStaff!;
+            url = '${AppUrls.baseUrl}/staff/${staff.id}/applyStaff';
+            print('id of staff to print: ${staff.id}');
             response = await dio.post(
               url,
               data: {
                 'company_id': company.companyId,
-                'staff_phone': staff.phone,
               },
               options: Options(headers: {
                 'Authorization': 'Bearer ${staff.token}',
@@ -531,6 +531,7 @@ class TenantApi {
 
     List<Warehouse> warehouses = [];
 
+    print('fetch warehouses called');
     final url = '${AppUrls.baseUrl}/${company.companyId}/warehouses';
 
     final token = admin.token ?? '';
@@ -566,12 +567,13 @@ class TenantApi {
   // for staffs
   Future<List<Warehouse>> fetchTheWarehouses(
       Company company, Staff staff) async {
+    print('fetch the warehouses called');
     var dio = Dio();
     int statusCode = 200;
 
     List<Warehouse> warehouses = [];
 
-    final url = '${AppUrls.baseUrl}/${company.companyId}/warehouse';
+    final url = '${AppUrls.baseUrl}/${company.companyId}/warehouses';
 
     final token = staff.token ?? '';
 
@@ -687,10 +689,11 @@ class TenantApi {
     int statusCode = 200;
     print('onCreate Warehouse function');
 
-    final url = '${AppUrls.baseUrl}/${company.companyId}/warehouses';
+    //final url = '${AppUrls.baseUrl}/${company.companyId}/warehouses';
+    final url = '${AppUrls.baseUrl}/${company.companyId}/staffToWarehouse';
 
     final token = admin.token;
-
+    print('warehouse id: ${warehouse.id}');
     try {
       final response = await dio.post(
         url,
@@ -700,7 +703,10 @@ class TenantApi {
             'Content-Type': 'application/json',
           },
         ),
-        data: warehouse.toMap(),
+        data: {
+          'staff_id': staff.id,
+          'warehouse_id': warehouse.id,
+        },
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {

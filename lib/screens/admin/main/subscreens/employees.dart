@@ -36,6 +36,8 @@ class _EmployeesWidgetState extends State<EmployeesWidget>
   List<Warehouse> warehouses = [];
   final tenantApi = TenantApi();
 
+  var empType = 'staff';
+
   void onAssignWarehouse(Staff staff) async {
     late int statusCode;
 
@@ -58,7 +60,7 @@ class _EmployeesWidgetState extends State<EmployeesWidget>
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(warehouses[index].name),
-                      Text(warehouses[index].address),
+                      Text(warehouses[index].location),
                     ],
                   ),
                 ),
@@ -77,6 +79,14 @@ class _EmployeesWidgetState extends State<EmployeesWidget>
 
   void refresh() async {
     //fetchWarehouses(widget.company.companyId!);
+    switch (empType) {
+      case "staff":
+        fetchStaffs(widget.company.companyId!);
+        break;
+      case "driver":
+        fetchDrivers(widget.company.companyId!);
+        break;
+    }
   }
 
   void fetchDrivers(int tenantId) async {
@@ -190,6 +200,14 @@ class _EmployeesWidgetState extends State<EmployeesWidget>
                 ),
                 borderRadius: BorderRadius.circular(50),
               ),
+              onTap: (value) {
+                if (value == 0) {
+                  empType = "staff";
+                } else if (value == 1) {
+                  empType = "driver";
+                }
+                setState(() {});
+              },
             ),
             const SizedBox(height: 20),
             Expanded(
@@ -225,78 +243,61 @@ class StaffList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return staff.isNotEmpty
-        ? Center(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * .8,
-              height: MediaQuery.of(context).size.height * .76,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    'drivers',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 6, 34, 220),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 19,
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.separated(
-                      itemCount: staff.length,
-                      itemBuilder: (ctx, index) => Card(
-                        elevation: 5,
-                        shadowColor: const Color.fromARGB(255, 33, 47, 243),
-                        child: ListTile(
-                          trailing: PopupMenuButton(
-                            itemBuilder: (context) => [
-                              const PopupMenuItem(
-                                value: 0,
-                                child: Text('Assign Warehouse'),
-                              ),
-                            ],
-                            onSelected: (value) {
-                              switch (value) {
-                                case 0:
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          AssignWarehouseWidget(
-                                        staff: staff[index],
-                                        company: company,
-                                        admin: admin,
-                                      ),
-                                    ),
-                                  );
-                              }
-                            },
-                          ),
-                          title: Text(
-                            staff[index].name,
-                            style: const TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                          subtitle: Row(
-                            children: [
-                              const Icon(
-                                Icons.location_on,
-                                size: 14,
-                              ),
-                              Text(
-                                staff[index].phone,
-                                style: const TextStyle(
-                                  fontSize: 12,
+        ? Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Center(
+              child: ListView.separated(
+                itemCount: staff.length,
+                itemBuilder: (ctx, index) => Card(
+                  elevation: 5,
+                  shadowColor: const Color.fromARGB(255, 33, 47, 243),
+                  child: ListTile(
+                    trailing: PopupMenuButton(
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 0,
+                          child: Text('Assign Warehouse'),
+                        ),
+                      ],
+                      onSelected: (value) {
+                        switch (value) {
+                          case 0:
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => AssignWarehouseWidget(
+                                  staff: staff[index],
+                                  company: company,
+                                  admin: admin,
                                 ),
                               ),
-                            ],
+                            );
+                        }
+                      },
+                    ),
+                    title: Text(
+                      staff[index].name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    subtitle: Row(
+                      children: [
+                        const Icon(
+                          Icons.location_on,
+                          size: 14,
+                        ),
+                        Text(
+                          staff[index].phone,
+                          style: const TextStyle(
+                            fontSize: 12,
                           ),
                         ),
-                      ),
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 10),
+                      ],
                     ),
                   ),
-                ],
+                ),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 10),
               ),
             ),
           )
@@ -316,52 +317,36 @@ class DriversList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return drivers.isNotEmpty
-        ? Center(
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * .8,
-              height: MediaQuery.of(context).size.height * .76,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    'drivers',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 6, 34, 220),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+        ? Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Center(
+              child: ListView.separated(
+                itemCount: drivers.length,
+                itemBuilder: (ctx, index) => Card(
+                  elevation: 5,
+                  shadowColor: const Color.fromARGB(255, 33, 47, 243),
+                  child: ListTile(
+                    title: Text(
+                      drivers[index].name,
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: ListView.separated(
-                      itemCount: drivers.length,
-                      itemBuilder: (ctx, index) => Card(
-                        elevation: 5,
-                        shadowColor: const Color.fromARGB(255, 33, 47, 243),
-                        child: ListTile(
-                          title: Text(
-                            drivers[index].name,
-                            style: const TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                          subtitle: Row(
-                            children: [
-                              const Icon(Icons.location_on),
-                              Text(
-                                drivers[index].phone,
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ],
+                    subtitle: Row(
+                      children: [
+                        const Icon(Icons.location_on),
+                        Text(
+                          drivers[index].phone,
+                          style: const TextStyle(
+                            fontSize: 15,
                           ),
                         ),
-                      ),
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 10),
+                      ],
                     ),
                   ),
-                ],
+                ),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 10),
               ),
             ),
           )

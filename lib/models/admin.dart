@@ -5,12 +5,14 @@ class Admin {
   final String phone;
   String? password;
   String? token;
+  int? id;
 
   Admin({
     required this.name,
     required this.phone,
     this.password,
     this.token,
+    this.id,
   });
 
   factory Admin.fromMap(Map<String, dynamic> json) {
@@ -22,6 +24,7 @@ class Admin {
 
   factory Admin.fromAuthedUser(AuthedUser user) {
     return Admin(
+      id: user.id,
       name: user.name,
       phone: user.phone,
       token: user.token,

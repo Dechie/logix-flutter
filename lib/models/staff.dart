@@ -5,15 +5,18 @@ class Staff {
   final String phone;
   String? password;
   String? token;
+  int? id;
 
   Staff({
     required this.name,
     required this.phone,
     this.password,
+    this.id,
     this.token,
   });
   factory Staff.fromAuthedUser(AuthedUser user) {
     return Staff(
+      id: user.id,
       name: user.name,
       phone: user.phone,
       token: user.token,

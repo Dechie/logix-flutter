@@ -106,7 +106,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
 
   void checkAssignedWarehouse() async {
     var shPrefs = SharedPrefs();
-    final wh = Warehouse(name: 'here', address: 'addis');
+    final wh = Warehouse(name: 'here', location: 'addis');
     List<String> staffList =
         await shPrefs.getWarehouseAssignedStaffs(widget.staff, wh);
 
@@ -196,7 +196,7 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * .65,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 const SizedBox(height: 30),
                 Text(company.name),
@@ -253,11 +253,38 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         backgroundColor: Colors.white,
         title: Text(
           'Choose Company',
-          style: GoogleFonts.roboto(),
+          style: GoogleFonts.montserrat(
+            textStyle: const TextStyle(
+              //color: GlobalConstants.mainBlue,
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        flexibleSpace: SizedBox(
+          height: double.infinity,
+          width: 20,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(25),
+                bottomRight: Radius.circular(25),
+              ),
+              gradient: LinearGradient(
+                colors: [
+                  GlobalConstants.mainBlue,
+                  GlobalConstants.mainBlue.withOpacity(.85),
+                  GlobalConstants.mainBlue.withOpacity(.45),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
         ),
         actions: [
           IconButton(
@@ -268,7 +295,10 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                 ),
               );
             },
-            icon: const Icon(Icons.arrow_back_ios),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
           ),
           IconButton(
             onPressed: () {
@@ -282,7 +312,10 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                 ),
               );
             },
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(
+              Icons.refresh,
+              color: Colors.black,
+            ),
           ),
         ],
       ),
@@ -322,23 +355,45 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                       ),
                     )
                   : Center(
-                      child: Expanded(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * .8,
+                        height: 250,
                         child: Column(
                           children: [
-                            const Text(
+                            Text(
                               'You Have not been assigned a warehouse yet. Notify admin to be assigned.',
-                            ),
-                            TextButton.icon(
-                              onPressed: () {
-                                //onNotifyAdmin,
-                                onCheckAppliedToWarehouse(
-                                    appliedCompany!, widget.staff);
-                              },
-                              icon: const Icon(
-                                Icons.arrow_forward_ios_rounded,
+                              style: GoogleFonts.montserrat(
+                                textStyle: const TextStyle(
+                                  //color: GlobalConstants.mainBlue,
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              label: const Text('Notify Admin'),
                             ),
+                            // TextButton.icon(
+                            //   onPressed: () {
+                            //     //onNotifyAdmin,
+                            //     onCheckAppliedToWarehouse(
+                            //         appliedCompany!, widget.staff);
+                            //   },
+                            //   icon: const Icon(
+                            //     Icons.arrow_forward_ios_rounded,
+                            //   ),
+                            //   label: const Text('Notify Admin'),
+                            // ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                child: const Text('Notify Admin'),
+                                onPressed: () {
+                                  //onNotifyAdmin,
+                                  onCheckAppliedToWarehouse(
+                                      appliedCompany!, widget.staff);
+                                },
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -406,7 +461,6 @@ class _WarehouseSuspendPageState extends State<WarehouseSuspendPage> {
                                       validator: (value) {
                                         if (value == null ||
                                             value.isEmpty ||
-                                            value.trim().length <= 1 ||
                                             value.trim().length >= 50 ||
                                             int.tryParse(value) is! int) {
                                           return 'Please enter a number';

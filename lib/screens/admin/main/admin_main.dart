@@ -92,55 +92,59 @@ class _AdminMainPageState extends State<AdminMainPage> {
         isScrollControlled: true,
         context: context,
         builder: (ctx) {
-          return Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        decoration: const InputDecoration(
-                            hintText: 'Company Name', border: InputBorder.none),
-                        controller: nameController,
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value.trim().length <= 1 ||
-                              value.trim().length >= 50) {
-                            return 'Must be between 1 and 50 characters';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          companyName = value!;
-                        },
-                      ),
-                    ],
+          return SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * .6,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          decoration: const InputDecoration(
+                              hintText: 'Company Name', border: InputBorder.none),
+                          controller: nameController,
+                          validator: (value) {
+                            if (value == null ||
+                                value.isEmpty ||
+                                value.trim().length <= 1 ||
+                                value.trim().length >= 50) {
+                              return 'Must be between 1 and 50 characters';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            companyName = value!;
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TextButton(
-                        onPressed: sendFormData,
-                        child: const Text('Submit'),
-                      ),
-                      const SizedBox(width: 30),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Cancel'),
-                      ),
-                    ],
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextButton(
+                          onPressed: sendFormData,
+                          child: const Text('Submit'),
+                        ),
+                        const SizedBox(width: 30),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         });

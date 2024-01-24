@@ -1,23 +1,29 @@
 class Warehouse {
   Warehouse({
     required this.name,
-    required this.address,
+    required this.location,
+    this.id,
+    this.staffId,
   });
-  final String address;
+  final String location;
   final String name;
+  int? id;
+  int? staffId;
 
   factory Warehouse.fromMap(Map<String, dynamic> map) {
     return Warehouse(
+      id: map['id'],
       name: map['name'],
-      address: map['address'],
+      location: map['address'],
+      staffId: map['staff_id'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'location': address,
-      
+      'location': location,
+      'staff_id': 0,
     };
   }
 }
